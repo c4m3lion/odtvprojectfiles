@@ -22,9 +22,15 @@ void main() {
     },
     child: MaterialApp(
       theme: ThemeData(
+        scaffoldBackgroundColor: MyColors.black,
+        backgroundColor: MyColors.black,
+        appBarTheme: AppBarTheme(
+          backgroundColor: MyColors.yellow,
+          foregroundColor: MyColors.black,
+        ),
         primaryColor: MyColors.yellow,
-        focusColor: MyColors.yellow,
-        highlightColor: MyColors.yellow,
+        focusColor: MyColors.orange,
+        highlightColor: MyColors.orange,
         buttonTheme: ButtonThemeData(
           buttonColor: MyColors.yellow, //  <-- dark color
           textTheme:

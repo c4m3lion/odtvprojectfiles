@@ -129,7 +129,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyColors.black,
       body: SafeArea(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -158,26 +157,27 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     TextField(
-                        //autofocus: true,
-                        enabled: !process,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(color: MyColors.orange)),
-                          filled: true,
-                          fillColor: MyColors.yellow,
-                          focusColor: MyColors.cyan,
-                          hintText: "Enter login",
-                          //labelText: "User",
-                          errorText: _validateUser,
-                        ),
-                        controller: userText,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        onSubmitted: (value) {
-                          checkInput();
-                        },
-                        textInputAction: TextInputAction.next),
+                      //autofocus: true,
+                      enabled: !process,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(color: MyColors.orange)),
+                        filled: true,
+                        fillColor: MyColors.yellow,
+                        focusColor: MyColors.cyan,
+                        hintText: "Enter login",
+                        //labelText: "User",
+                        errorText: _validateUser,
+                      ),
+                      controller: userText,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      onSubmitted: (value) {
+                        checkInput();
+                      },
+                      textInputAction: TextInputAction.next,
+                    ),
                     SizedBox(
                       height: 6,
                     ),
