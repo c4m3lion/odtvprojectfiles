@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 
 class MyNetwork {
   static String token = "";
@@ -21,7 +22,7 @@ class MyNetwork {
           },
         ),
       );
-      print(response.body);
+      MyPrint.printWarning(response.body);
       Map data = jsonDecode(response.body);
       if (data.containsKey("error")) {
         return data['error']['message'];
@@ -30,7 +31,7 @@ class MyNetwork {
         return "OK";
       }
     } catch (e) {
-      print(e);
+      MyPrint.printError(e.toString());
       return e.toString();
     }
   }

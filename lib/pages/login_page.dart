@@ -70,10 +70,28 @@ class _LoginPageState extends State<LoginPage> {
       if (_res == "not enough data") {
         _validateUser = "enter user correctly";
         _validatePass = "Enter password correctly!";
-      }
-      if (_res == "wrong login or password") {
-        _validateUser = "wrong login or password";
-        _validatePass = "wrong login or password";
+      } else {
+        if (_res == "wrong login or password") {
+          _validateUser = "wrong login or password";
+          _validatePass = "wrong login or password";
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: MyColors.yellow,
+                title: const Text('Error'),
+                content: Text(_res),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       }
       setState(() {
         process = false;
