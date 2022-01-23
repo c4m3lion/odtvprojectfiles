@@ -8,3 +8,13 @@ class MyColors {
   static Color green = const Color(0xff76B041);
   static Color white = Colors.white;
 }
+
+class MyPrint {
+  static void printWarning(String text) {
+    print('\x1B[33m$text\x1B[0m');
+  }
+
+  static void printError(String text) {
+    print('\x1B[31m$text\x1B[0m');
+  }
+}

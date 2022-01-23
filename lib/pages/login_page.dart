@@ -2,7 +2,9 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
+import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,32 +16,81 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final userText = TextEditingController();
   final passText = TextEditingController();
+  final storage = new FlutterSecureStorage();
   bool isSave = false;
-  bool _validateUser = false;
-  bool _validatePass = false;
+  String? _validateUser = null;
+  String? _validatePass = null;
+  bool process = false;
 
   ///Functions///////////////////////////////
 
   void checkInput({bool canGo = false}) {
-    _validateUser = false;
-    _validatePass = false;
+    if (process) {
+      return;
+    }
+    _validateUser = null;
+    _validatePass = null;
     if (userText.text.isEmpty) {
-      _validateUser = true;
+      _validateUser = "User name can not be empty";
     }
     if (!canGo) {
       setState(() {});
       return;
     }
+    MyPrint.printWarning("userValidation is correct!");
     if (passText.text.isEmpty) {
-      _validatePass = true;
+      _validatePass = "Password can not be empty";
     }
     setState(() {});
-    if (!_validatePass && !_validateUser) {
-      getDatas();
+    if (_validatePass == null && _validateUser == null) {
+      startLogin(user: userText.text, pass: passText.text);
     }
   }
 
-  void getDatas() {}
+  Future<void> startLogin({required String user, required String pass}) async {
+    setState(() {
+      process = true;
+    });
+    if (isSave) {
+      await storage.write(key: "user", value: user);
+      await storage.write(key: "pass", value: pass);
+      await storage.write(key: "isSave", value: isSave.toString());
+    } else {
+      await storage.delete(key: "user");
+      await storage.delete(key: "pass");
+      await storage.write(key: "isSave", value: isSave.toString());
+    }
+    MyPrint.printWarning("login started");
+    String _res = await MyNetwork().login(login: user, pass: pass);
+    if (_res == "OK") {
+      MyPrint.printWarning(MyNetwork.token);
+      Navigator.pushReplacementNamed(context, "/main");
+    } else {
+      MyPrint.printError(_res);
+      if (_res == "not enough data") {
+        _validateUser = "enter user correctly";
+        _validatePass = "Enter password correctly!";
+      }
+      if (_res == "wrong login or password") {
+        _validateUser = "wrong login or password";
+        _validatePass = "wrong login or password";
+      }
+      setState(() {
+        process = false;
+      });
+    }
+  }
+
+  void firstStart() async {
+    String _issave = await storage.read(key: "isSave") ?? "false";
+    isSave = _issave == "true" ? true : false;
+
+    if (isSave) {
+      userText.text = (await storage.read(key: "user")) ?? "";
+      passText.text = (await storage.read(key: "pass")) ?? "";
+    }
+    setState(() {});
+  }
 
   /////////////////
   @override
@@ -52,6 +103,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
+    MyPrint.printWarning("Welcome to Login Page");
+    firstStart();
     super.initState();
   }
 
@@ -88,6 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     TextField(
                         //autofocus: true,
+                        enabled: !process,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30),
@@ -97,8 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                           focusColor: MyColors.cyan,
                           hintText: "Enter login",
                           //labelText: "User",
-                          errorText:
-                              _validateUser ? 'Value Can\'t Be Empty' : null,
+                          errorText: _validateUser,
                         ),
                         controller: userText,
                         enableSuggestions: false,
@@ -111,26 +164,26 @@ class _LoginPageState extends State<LoginPage> {
                       height: 6,
                     ),
                     TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(color: MyColors.orange)),
-                        filled: true,
-                        fillColor: MyColors.yellow,
-                        focusColor: MyColors.cyan,
-                        hintText: "Enter password",
-                        //labelText: "User",
-                        errorText:
-                            _validatePass ? 'Value Can\'t Be Empty' : null,
-                      ),
-                      controller: passText,
-                      obscureText: true,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      onSubmitted: (value) {
-                        checkInput(canGo: true);
-                      },
-                    ),
+                        enabled: !process,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide(color: MyColors.orange)),
+                          filled: true,
+                          fillColor: MyColors.yellow,
+                          focusColor: MyColors.cyan,
+                          hintText: "Enter password",
+                          //labelText: "User",
+                          errorText: _validatePass,
+                        ),
+                        controller: passText,
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        onSubmitted: (value) {
+                          checkInput(canGo: false);
+                        },
+                        textInputAction: TextInputAction.next),
                     SizedBox(
                       height: 6,
                     ),
@@ -169,7 +222,8 @@ class _LoginPageState extends State<LoginPage> {
                       width: 100,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () => {checkInput(canGo: true)},
+                        onPressed:
+                            process ? null : () => {checkInput(canGo: true)},
                         child: Text("Login"),
                         style: ButtonStyle(
                           backgroundColor:
