@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
     String _res = await MyNetwork().login(login: user, pass: pass);
     if (_res == "OK") {
       MyPrint.printWarning(MyNetwork.token);
-      Navigator.pushReplacementNamed(context, "/main");
+      Navigator.pushReplacementNamed(context, "/loading");
     } else {
       MyPrint.printError(_res);
       if (_res == "not enough data") {

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
+import 'package:odtvprojectfiles/pages/loading_page.dart';
 import 'package:odtvprojectfiles/pages/login_page.dart';
 import 'package:odtvprojectfiles/pages/main_page.dart';
 
@@ -46,6 +47,7 @@ void main() {
       initialRoute: '/login',
       routes: {
         '/login': (context) => LoginPage(),
+        '/loading': (context) => LoadingPage(),
         '/main': (context) => MainPage(),
       },
     ),

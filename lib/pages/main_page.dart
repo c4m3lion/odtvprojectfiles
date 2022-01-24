@@ -3,6 +3,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
+import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -15,7 +17,6 @@ class _MainPageState extends State<MainPage> {
   final searchText = TextEditingController();
   bool _isSearching = false;
   String searchQuery = "Search query";
-
   ////Functions////////////////////
   ///
   ///////////////////////////
@@ -96,47 +97,142 @@ class _MainPageState extends State<MainPage> {
         title: _isSearching ? _buildSearchField() : Text("ODTV"),
         actions: _buildActions(),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-          child: Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Favorites:",
-                  style: TextStyle(color: MyColors.white, fontSize: 30),
-                ),
-                Expanded(child: SizedBox()),
-                RichText(
-                  text: TextSpan(
-                      text: "see all",
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          MyPrint.printWarning("see all pressed");
-                        },
-                      style: TextStyle(color: MyColors.white, fontSize: 13)),
-                ),
-                InkWell(
-                  onTap: () => {},
-                  child: RotatedBox(
-                    quarterTurns: 1,
-                    child: Icon(
-                      Icons.arrow_circle_up,
-                      size: 20,
-                      color: MyColors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Channels:",
+                    style: TextStyle(color: MyColors.white, fontSize: 30),
+                  ),
+                  Expanded(child: SizedBox()),
+                  RichText(
+                    text: TextSpan(
+                        text: "see all",
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            MyPrint.printWarning("see all pressed");
+                          },
+                        style: TextStyle(color: MyColors.white, fontSize: 13)),
+                  ),
+                  InkWell(
+                    onTap: () => {},
+                    child: RotatedBox(
+                      quarterTurns: 1,
+                      child: Icon(
+                        Icons.arrow_circle_up,
+                        size: 20,
+                        color: MyColors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 150,
+              child: ListView.builder(
+                physics: ClampingScrollPhysics(),
+                itemCount: MyNetwork.channels.length,
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) => Card(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: MyColors.green,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25.0),
+                    child: FadeInImage.assetNetwork(
+                      fit: BoxFit.fill,
+                      placeholder:
+                          'assets/icons/loadingicon.png', //kTransparentImage,
+                      image: MyNetwork.channels[index].icon,
+                      imageErrorBuilder: (context, url, error) =>
+                          SizedBox(width: 200, child: new Icon(Icons.error)),
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-            Row(
-              children: [],
+            SizedBox(
+              height: 20,
             ),
-            Row(
-              children: [],
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Favorites:",
+                    style: TextStyle(color: MyColors.white, fontSize: 30),
+                  ),
+                  Expanded(child: SizedBox()),
+                  RichText(
+                    text: TextSpan(
+                        text: "see all",
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            MyPrint.printWarning("see all pressed");
+                          },
+                        style: TextStyle(color: MyColors.white, fontSize: 13)),
+                  ),
+                  InkWell(
+                    onTap: () => {},
+                    child: RotatedBox(
+                      quarterTurns: 1,
+                      child: Icon(
+                        Icons.arrow_circle_up,
+                        size: 20,
+                        color: MyColors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ]),
+            SizedBox(
+              height: 150,
+              child: ListView.builder(
+                physics: ClampingScrollPhysics(),
+                itemCount: MyNetwork.channels.length,
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) => Card(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: MyColors.green,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25.0),
+                    child: FadeInImage.assetNetwork(
+                      fit: BoxFit.fill,
+                      placeholder:
+                          'assets/icons/loadingicon.png', //kTransparentImage,
+                      image: MyNetwork.channels[index].icon,
+                      imageErrorBuilder: (context, url, error) =>
+                          SizedBox(width: 200, child: new Icon(Icons.error)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       drawer: Drawer(
