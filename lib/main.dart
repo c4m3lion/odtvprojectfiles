@@ -6,6 +6,7 @@ import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/pages/loading_page.dart';
 import 'package:odtvprojectfiles/pages/login_page.dart';
 import 'package:odtvprojectfiles/pages/main_page.dart';
+import 'package:odtvprojectfiles/pages/video_page.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -23,6 +24,7 @@ void main() {
     },
     child: MaterialApp(
       theme: ThemeData(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
         scaffoldBackgroundColor: MyColors.black,
         backgroundColor: MyColors.black,
         appBarTheme: AppBarTheme(
@@ -49,6 +51,7 @@ void main() {
         '/login': (context) => LoginPage(),
         '/loading': (context) => LoadingPage(),
         '/main': (context) => MainPage(),
+        '/video': (context) => VideoPage(),
       },
     ),
   ));

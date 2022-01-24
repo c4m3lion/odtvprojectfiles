@@ -35,6 +35,10 @@ dependencies:
   http: ^0.13.4
   flutter_secure_storage: ^5.0.2
   video_thumbnail: ^0.4.3
+  transparent_image: ^2.0.0
+  loading_gifs: ^0.3.0
+  video_player: ^2.2.14
+  wakelock: ^0.6.1
 
 dev_dependencies:
   flutter_test:
@@ -47,8 +51,6 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
   flutter_launcher_icons: "^0.9.2"
-  transparent_image: ^2.0.0
-  loading_gifs: ^0.3.0
 
 flutter_icons:
   android: "launcher_icon"

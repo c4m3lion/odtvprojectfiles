@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
+import 'package:wakelock/wakelock.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -75,22 +76,7 @@ class _LoginPageState extends State<LoginPage> {
           _validateUser = "wrong login or password";
           _validatePass = "wrong login or password";
         } else {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                backgroundColor: MyColors.yellow,
-                title: const Text('Error'),
-                content: Text(_res),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, 'OK'),
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
+          _showDiolog(context, _res);
         }
       }
       setState(() {
@@ -110,6 +96,25 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {});
   }
 
+  void _showDiolog(BuildContext context, String err) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: MyColors.yellow,
+          title: const Text('Error'),
+          content: Text(err),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   /////////////////
   @override
   void dispose() {
@@ -124,6 +129,7 @@ class _LoginPageState extends State<LoginPage> {
     MyPrint.printWarning("Welcome to Login Page");
     firstStart();
     super.initState();
+    Wakelock.disable();
   }
 
   @override

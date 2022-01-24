@@ -8,6 +8,7 @@ class MyNetwork {
   static Channel currentChanel = Channel();
   static List<Channel> channels = List.empty(growable: true);
   static List<Channel> favorites = List.empty(growable: true);
+  static bool isVideoPlaying = false;
 
   Future<String> login({required String login, required String pass}) async {
     try {
@@ -98,6 +99,29 @@ class MyNetwork {
         }
         currentChanel = channels[0];
         return "OK";
+      }
+    } catch (e) {
+      MyPrint.printError(e.toString());
+      return e.toString();
+    }
+  }
+
+  // ignore: non_constant_identifier_names
+  Future<String> getPlayBack({String channel_id = "none"}) async {
+    channel_id == "none" ? channel_id = currentChanel.id : null;
+    try {
+      Response response = await get(
+        Uri.parse("https://mw.odtv.az/api/v1/channel_url/$channel_id"),
+        headers: {
+          'oms-client': token,
+        },
+      );
+      MyPrint.printWarning(response.body);
+      Map data = jsonDecode(response.body);
+      if (data.containsKey("error")) {
+        return data['error']['message'];
+      } else {
+        return data['url'];
       }
     } catch (e) {
       MyPrint.printError(e.toString());

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:wakelock/wakelock.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -89,6 +90,12 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Wakelock.disable();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
@@ -145,23 +152,30 @@ class _MainPageState extends State<MainPage> {
                 itemCount: MyNetwork.channels.length,
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) => Card(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: MyColors.green,
-                      width: 2,
+                itemBuilder: (context, index) => InkWell(
+                  onTap: () => {
+                    MyNetwork.isVideoPlaying = true,
+                    MyNetwork.currentChanel = MyNetwork.channels[index],
+                    Navigator.pushNamed(context, '/video'),
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: MyColors.green,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(25.0),
                     ),
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(25.0),
-                    child: FadeInImage.assetNetwork(
-                      fit: BoxFit.fill,
-                      placeholder:
-                          'assets/icons/loadingicon.png', //kTransparentImage,
-                      image: MyNetwork.channels[index].icon,
-                      imageErrorBuilder: (context, url, error) =>
-                          SizedBox(width: 200, child: new Icon(Icons.error)),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25.0),
+                      child: FadeInImage.assetNetwork(
+                        fit: BoxFit.fill,
+                        placeholder:
+                            'assets/icons/loadingicon.png', //kTransparentImage,
+                        image: MyNetwork.channels[index].icon,
+                        imageErrorBuilder: (context, url, error) =>
+                            SizedBox(width: 200, child: Icon(Icons.error)),
+                      ),
                     ),
                   ),
                 ),
