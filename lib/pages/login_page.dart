@@ -92,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
     if (isSave) {
       userText.text = (await storage.read(key: "user")) ?? "";
       passText.text = (await storage.read(key: "pass")) ?? "";
+      checkInput(canGo: true);
     }
     setState(() {});
   }
@@ -179,6 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                       controller: userText,
                       enableSuggestions: false,
                       autocorrect: false,
+                      keyboardType: TextInputType.number,
                       onSubmitted: (value) {
                         checkInput();
                       },
@@ -204,6 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
+                        keyboardType: TextInputType.number,
                         onSubmitted: (value) {
                           checkInput(canGo: false);
                         },

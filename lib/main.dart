@@ -2,10 +2,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:odtvprojectfiles/mylibs/button_detector.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
+import 'package:odtvprojectfiles/pages/channellist_page.dart';
 import 'package:odtvprojectfiles/pages/loading_page.dart';
 import 'package:odtvprojectfiles/pages/login_page.dart';
 import 'package:odtvprojectfiles/pages/main_page.dart';
+import 'package:odtvprojectfiles/pages/searchpage.dart';
 import 'package:odtvprojectfiles/pages/video_page.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -18,9 +21,12 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 void main() {
+  HttpOverrides.global = MyHttpOverrides();
   runApp(Shortcuts(
     shortcuts: <LogicalKeySet, Intent>{
       LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent(),
+      LogicalKeySet(LogicalKeyboardKey.play): ActivateIntent(),
+      LogicalKeySet(LogicalKeyboardKey.enter): ActivateIntent(),
     },
     child: MaterialApp(
       theme: ThemeData(
@@ -52,6 +58,9 @@ void main() {
         '/loading': (context) => LoadingPage(),
         '/main': (context) => MainPage(),
         '/video': (context) => VideoPage(),
+        '/button': (context) => ButtonDetector(),
+        '/channels': (context) => ChannelListPage(),
+        '/search': (context) => SearchPage(),
       },
     ),
   ));

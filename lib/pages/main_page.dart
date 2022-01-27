@@ -100,9 +100,15 @@ class _MainPageState extends State<MainPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        leading: _isSearching ? const BackButton() : null,
-        title: _isSearching ? _buildSearchField() : Text("ODTV"),
-        actions: _buildActions(),
+        title: Text("ODTV"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              Navigator.pushNamed(context, '/search');
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -127,12 +133,14 @@ class _MainPageState extends State<MainPage> {
                         text: "see all",
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            MyPrint.printWarning("see all pressed");
+                            Navigator.pushNamed(context, '/channels');
                           },
                         style: TextStyle(color: MyColors.white, fontSize: 13)),
                   ),
                   InkWell(
-                    onTap: () => {},
+                    onTap: () => {
+                      Navigator.pushNamed(context, '/channels'),
+                    },
                     child: RotatedBox(
                       quarterTurns: 1,
                       child: Icon(
@@ -250,6 +258,7 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       drawer: Drawer(
+        backgroundColor: MyColors.black,
         // Add a ListView to the drawer. This ensures the user can scroll
         // through the options in the drawer if there isn't enough vertical
         // space to fit everything.
@@ -257,14 +266,34 @@ class _MainPageState extends State<MainPage> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+            SizedBox(
+              height: 80,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: MyColors.yellow,
+                ),
+                child: Text(
+                  "User: " + MyNetwork.userInfo,
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: MyColors.black,
+                  ),
+                ),
               ),
-              child: Text('Drawer Header'),
             ),
             ListTile(
-              title: const Text('Item 1'),
+              title: Card(
+                color: MyColors.yellow,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const <Widget>[
+                    ListTile(
+                      leading: Icon(Icons.tv),
+                      title: Text('Channels'),
+                    ),
+                  ],
+                ),
+              ),
               onTap: () {
                 // Update the state of the app
                 // ...
@@ -273,7 +302,18 @@ class _MainPageState extends State<MainPage> {
               },
             ),
             ListTile(
-              title: const Text('Item 2'),
+              title: Card(
+                color: MyColors.yellow,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const <Widget>[
+                    ListTile(
+                      leading: Icon(Icons.favorite),
+                      title: Text('Favorites'),
+                    ),
+                  ],
+                ),
+              ),
               onTap: () {
                 // Update the state of the app
                 // ...

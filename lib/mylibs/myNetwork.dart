@@ -5,14 +5,17 @@ import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 
 class MyNetwork {
   static String token = "";
+  static String userInfo = "";
   static Channel currentChanel = Channel();
   static List<Channel> channels = List.empty(growable: true);
+  static List<Channel> channelsSeach = List.empty(growable: true);
   static List<Channel> favorites = List.empty(growable: true);
   static bool isVideoPlaying = false;
 
   Future<String> login({required String login, required String pass}) async {
     try {
       String macAdress = "02:00:00:00:00:00";
+      userInfo = login;
       Response response = await post(
         Uri.parse("https://mw.odtv.az/api/v1/auth"),
         headers: {
