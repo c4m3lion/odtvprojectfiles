@@ -38,7 +38,9 @@ dependencies:
   transparent_image: ^2.0.0
   loading_gifs: ^0.3.0
   video_player: ^2.2.14
-  wakelock: ^0.6.1
+  wakelock: ^0.5.6
+  chewie: ^1.2.2
+  better_player: ^0.0.81
 
 dev_dependencies:
   flutter_test:

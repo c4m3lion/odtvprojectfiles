@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 
 class MyColors {
   static Color yellow = const Color(0xffFFC914);
@@ -35,5 +36,13 @@ class MyPrint {
         );
       },
     );
+  }
+}
+
+class MyFunctions {
+  static void channelButton(BuildContext context, int index) {
+    MyNetwork.isVideoPlaying = true;
+    MyNetwork.currentChanel = MyNetwork.channels[index];
+    Navigator.pushNamed(context, '/loading');
   }
 }

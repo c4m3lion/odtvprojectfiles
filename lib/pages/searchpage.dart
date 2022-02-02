@@ -109,11 +109,7 @@ class _SearchPageState extends State<SearchPage> {
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             itemBuilder: (context, index) => InkWell(
-              onTap: () => {
-                MyNetwork.isVideoPlaying = true,
-                MyNetwork.currentChanel = MyNetwork.channelsSeach[index],
-                Navigator.pushNamed(context, '/video'),
-              },
+              onTap: () => {MyFunctions.channelButton(context, index)},
               child: SizedBox(
                 height: 10,
                 child: Card(

@@ -67,9 +67,6 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //implementation 'com.google.android.exoplayer:extension-ima:2.16.1'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.16.1'
-    implementation 'com.google.android.exoplayer:exoplayer-hls:2.16.1'
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.16.1'
-    implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.16.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.16.1'
     implementation 'com.android.support:multidex:1.0.3'
 }

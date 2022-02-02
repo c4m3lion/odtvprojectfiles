@@ -161,11 +161,7 @@ class _MainPageState extends State<MainPage> {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) => InkWell(
-                  onTap: () => {
-                    MyNetwork.isVideoPlaying = true,
-                    MyNetwork.currentChanel = MyNetwork.channels[index],
-                    Navigator.pushNamed(context, '/video'),
-                  },
+                  onTap: () => {MyFunctions.channelButton(context, index)},
                   child: Card(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
@@ -267,7 +263,7 @@ class _MainPageState extends State<MainPage> {
           padding: EdgeInsets.zero,
           children: [
             SizedBox(
-              height: 80,
+              height: 120,
               child: DrawerHeader(
                 decoration: BoxDecoration(
                   color: MyColors.yellow,

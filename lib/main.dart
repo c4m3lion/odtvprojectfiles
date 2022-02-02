@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:odtvprojectfiles/mylibs/button_detector.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
+import 'package:odtvprojectfiles/pages/bettervideo_page.dart';
 import 'package:odtvprojectfiles/pages/channellist_page.dart';
 import 'package:odtvprojectfiles/pages/loading_page.dart';
 import 'package:odtvprojectfiles/pages/login_page.dart';
 import 'package:odtvprojectfiles/pages/main_page.dart';
 import 'package:odtvprojectfiles/pages/searchpage.dart';
 import 'package:odtvprojectfiles/pages/video_page.dart';
+import 'package:odtvprojectfiles/pages/videoplayer_page.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -25,8 +27,6 @@ void main() {
   runApp(Shortcuts(
     shortcuts: <LogicalKeySet, Intent>{
       LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent(),
-      LogicalKeySet(LogicalKeyboardKey.play): ActivateIntent(),
-      LogicalKeySet(LogicalKeyboardKey.enter): ActivateIntent(),
     },
     child: MaterialApp(
       theme: ThemeData(
@@ -41,7 +41,7 @@ void main() {
         focusColor: MyColors.orange,
         highlightColor: MyColors.orange,
         buttonTheme: ButtonThemeData(
-          buttonColor: MyColors.yellow, //  <-- dark color
+          buttonColor: MyColors.yellow,
           textTheme:
               ButtonTextTheme.primary, //  <-- this auto selects the right color
         ),
@@ -57,7 +57,9 @@ void main() {
         '/login': (context) => LoginPage(),
         '/loading': (context) => LoadingPage(),
         '/main': (context) => MainPage(),
-        '/video': (context) => VideoPage(),
+        '/oldvideo': (context) => VideoPage(),
+        '/video': (context) => BetterVideoPage(),
+        '/video2': (context) => VideoPlayerPage(),
         '/button': (context) => ButtonDetector(),
         '/channels': (context) => ChannelListPage(),
         '/search': (context) => SearchPage(),

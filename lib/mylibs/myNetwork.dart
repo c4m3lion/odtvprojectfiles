@@ -7,6 +7,7 @@ class MyNetwork {
   static String token = "";
   static String userInfo = "";
   static Channel currentChanel = Channel();
+  static List<EPG> currectEPG = List.empty(growable: true);
   static List<Channel> channels = List.empty(growable: true);
   static List<Channel> channelsSeach = List.empty(growable: true);
   static List<Channel> favorites = List.empty(growable: true);
@@ -131,6 +132,37 @@ class MyNetwork {
       return e.toString();
     }
   }
+
+  Future<String> getEPG({String channel_id = "none"}) async {
+    channel_id == "none" ? channel_id = currentChanel.id : null;
+    try {
+      Response response = await get(
+        Uri.parse("https://mw.odtv.az/api/v1/epg/$channel_id"),
+        headers: {
+          'oms-client': token,
+        },
+      );
+      MyPrint.printWarning(response.body);
+      Map data = jsonDecode(response.body);
+      if (data.containsKey("error")) {
+        return data['error']['message'];
+      } else {
+        currectEPG.clear();
+        for (var i in data['epg']) {
+          EPG c = EPG();
+          c.title = i['title'];
+          c.start = i['start'].toString();
+          c.end = i['end'].toString();
+          c.description = i['description'];
+          currectEPG.add(c);
+        }
+        return "OK";
+      }
+    } catch (e) {
+      MyPrint.printError(e.toString());
+      return e.toString();
+    }
+  }
 }
 
 class Channel {
@@ -141,4 +173,13 @@ class Channel {
   String category = "";
   bool archive = false;
   String icon = "";
+  String playBackUrl = "";
+}
+
+class EPG {
+  String id = "";
+  String title = "";
+  String start = "";
+  String end = "";
+  String description = "";
 }

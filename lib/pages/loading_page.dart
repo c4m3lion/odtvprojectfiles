@@ -23,6 +23,12 @@ class _LoadingPageState extends State<LoadingPage>
     }
   }
 
+  void loadVideo() async {
+    MyNetwork.currentChanel.playBackUrl = await MyNetwork().getPlayBack();
+    await MyNetwork().getEPG();
+    Navigator.pushReplacementNamed(context, '/video');
+  }
+
   void _showAlert(BuildContext context, String err) {
     showDialog(
       context: context,
@@ -46,7 +52,11 @@ class _LoadingPageState extends State<LoadingPage>
       vsync: this,
     );
     _controller.repeat();
-    loadDatas();
+    if (MyNetwork.isVideoPlaying) {
+      loadVideo();
+    } else {
+      loadDatas();
+    }
     super.initState();
   }
 

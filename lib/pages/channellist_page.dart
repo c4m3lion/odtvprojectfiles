@@ -39,11 +39,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
           shrinkWrap: true,
           scrollDirection: Axis.vertical,
           itemBuilder: (context, index) => InkWell(
-            onTap: () => {
-              MyNetwork.isVideoPlaying = true,
-              MyNetwork.currentChanel = MyNetwork.channels[index],
-              Navigator.pushNamed(context, '/video'),
-            },
+            onTap: () => {MyFunctions.channelButton(context, index)},
             child: SizedBox(
               height: 10,
               child: Card(
