@@ -80,7 +80,7 @@ class MyNetwork {
   Future<String> getFavorites() async {
     try {
       Response response = await get(
-        Uri.parse("https://mw.odtv.az/api/v1/channels"),
+        Uri.parse("https://mw.odtv.az/api/v1/channel_fav"),
         headers: {
           'oms-client': token,
         },
@@ -90,18 +90,53 @@ class MyNetwork {
       if (data.containsKey("error")) {
         return data['error']['message'];
       } else {
-        for (var i in data['channels']) {
-          Channel c = Channel();
-          c.id = i['id'];
-          c.lcn = i['lcn'];
-          c.position = i['position'];
-          c.name = i['name'];
-          c.category = i['category'];
-          c.archive = i['archive'];
-          c.icon = i['icon'];
-          channels.add(c);
-        }
-        currentChanel = channels[0];
+        updateFavorites(data);
+        return "OK";
+      }
+    } catch (e) {
+      MyPrint.printError(e.toString());
+      return e.toString();
+    }
+  }
+
+  Future<String> addFavorite({String channel_id = "none"}) async {
+    channel_id == "none" ? channel_id = currentChanel.id : null;
+    try {
+      Response response = await post(
+        Uri.parse("https://mw.odtv.az/api/v1/channel_fav/add/$channel_id"),
+        headers: {
+          'oms-client': token,
+        },
+      );
+      MyPrint.printWarning(response.body);
+      Map data = jsonDecode(response.body);
+      if (data.containsKey("error")) {
+        return data['error']['message'];
+      } else {
+        updateFavorites(data);
+        return "OK";
+      }
+    } catch (e) {
+      MyPrint.printError(e.toString());
+      return e.toString();
+    }
+  }
+
+  Future<String> removeFavorite({String channel_id = "none"}) async {
+    channel_id == "none" ? channel_id = currentChanel.id : null;
+    try {
+      Response response = await post(
+        Uri.parse("https://mw.odtv.az/api/v1/channel_fav/remove/$channel_id"),
+        headers: {
+          'oms-client': token,
+        },
+      );
+      MyPrint.printWarning(response.body);
+      Map data = jsonDecode(response.body);
+      if (data.containsKey("error")) {
+        return data['error']['message'];
+      } else {
+        updateFavorites(data);
         return "OK";
       }
     } catch (e) {
@@ -163,6 +198,19 @@ class MyNetwork {
       return e.toString();
     }
   }
+
+  void updateFavorites(var data) {
+    favorites.clear();
+    for (String i in data['fav']) {
+      var k = MyNetwork.channels
+          .where(((element) => element.id.toLowerCase().contains(i)))
+          .toList();
+      if (k.isNotEmpty) {
+        favorites.add(k[0]);
+      }
+      MyPrint.printError(k.length.toString());
+    }
+  }
 }
 
 class Channel {
@@ -174,6 +222,7 @@ class Channel {
   bool archive = false;
   String icon = "";
   String playBackUrl = "";
+  bool isFavorite = false;
 }
 
 class EPG {

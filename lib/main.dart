@@ -30,28 +30,28 @@ void main() {
     },
     child: MaterialApp(
       theme: ThemeData(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        scaffoldBackgroundColor: MyColors.black,
-        backgroundColor: MyColors.black,
-        appBarTheme: AppBarTheme(
-          backgroundColor: MyColors.yellow,
-          foregroundColor: MyColors.black,
-        ),
-        primaryColor: MyColors.yellow,
-        focusColor: MyColors.orange,
-        highlightColor: MyColors.orange,
-        buttonTheme: ButtonThemeData(
-          buttonColor: MyColors.yellow,
-          textTheme:
-              ButtonTextTheme.primary, //  <-- this auto selects the right color
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            primary: MyColors.yellow, // Button color
-            onPrimary: MyColors.white, // Text color
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          scaffoldBackgroundColor: MyColors.black,
+          backgroundColor: MyColors.black,
+          appBarTheme: AppBarTheme(
+            backgroundColor: MyColors.yellow,
+            foregroundColor: MyColors.black,
           ),
-        ),
-      ),
+          primaryColor: MyColors.yellow,
+          focusColor: MyColors.orange,
+          highlightColor: MyColors.orange,
+          buttonTheme: ButtonThemeData(
+            buttonColor: MyColors.yellow,
+            textTheme: ButtonTextTheme
+                .primary, //  <-- this auto selects the right color
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              primary: MyColors.yellow, // Button color
+              onPrimary: MyColors.white, // Text color
+            ),
+          ),
+          iconTheme: IconThemeData(color: MyColors.orange)),
       initialRoute: '/login',
       routes: {
         '/login': (context) => LoginPage(),

@@ -1,10 +1,11 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
+import 'package:odtvprojectfiles/pages/main_page.dart';
 
 class BetterVideoPage extends StatefulWidget {
   const BetterVideoPage({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class BetterVideoPageState extends State<BetterVideoPage> {
   late BetterPlayerController _betterPlayerController;
   bool isLandscape = false;
   int indexOpenCard = -1;
+  bool isFavPressed = false;
   void getVideo() {
     MyPrint.printWarning(MyNetwork.currentChanel.playBackUrl);
     BetterPlayerDataSource betterPlayerDataSource = BetterPlayerDataSource(
@@ -27,9 +29,9 @@ class BetterVideoPageState extends State<BetterVideoPage> {
     _betterPlayerController = BetterPlayerController(
         BetterPlayerConfiguration(
           autoPlay: true,
-          fullScreenByDefault: true,
+          //fullScreenByDefault: true,
           allowedScreenSleep: false,
-          fit: BoxFit.fill,
+          fit: BoxFit.fitHeight,
           deviceOrientationsOnFullScreen: [
             DeviceOrientation.landscapeLeft,
             DeviceOrientation.landscapeRight,
@@ -37,7 +39,7 @@ class BetterVideoPageState extends State<BetterVideoPage> {
             DeviceOrientation.portraitUp,
           ],
           controlsConfiguration: BetterPlayerControlsConfiguration(
-              playerTheme: BetterPlayerTheme.cupertino,
+              playerTheme: BetterPlayerTheme.material,
               enableProgressBar: false,
               enableProgressText: false,
               enableSkips: false,
@@ -52,6 +54,24 @@ class BetterVideoPageState extends State<BetterVideoPage> {
               ]),
         ),
         betterPlayerDataSource: betterPlayerDataSource);
+  }
+
+  void addFav({required String id}) async {
+    isFavPressed = true;
+    setState(() {});
+    if (!MyNetwork.currentChanel.isFavorite) {
+      String k = await MyNetwork().addFavorite(channel_id: id);
+      if (k == "OK") {
+        MyNetwork.currentChanel.isFavorite = true;
+      }
+    } else {
+      String k = await MyNetwork().removeFavorite(channel_id: id);
+      if (k == "OK") {
+        MyNetwork.currentChanel.isFavorite = false;
+      }
+    }
+    isFavPressed = false;
+    setState(() {});
   }
 
   void _showAlert(BuildContext context, int currentIdex) {
@@ -86,99 +106,78 @@ class BetterVideoPageState extends State<BetterVideoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        return SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(MyNetwork.currentChanel.name),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.favorite_outline),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/search');
-                  },
-                ),
-              ],
-            ),
-            body: Center(
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: BetterPlayer(
-                  controller: _betterPlayerController,
+    return SafeArea(
+      child: Scaffold(
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              pinned: false,
+              snap: false,
+              floating: false,
+              expandedHeight: 200.0,
+              flexibleSpace: FlexibleSpaceBar(
+                background: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: BetterPlayer(
+                    controller: _betterPlayerController,
+                  ),
                 ),
               ),
             ),
-            drawer: Drawer(
-              backgroundColor: MyColors.black,
-              // Add a ListView to the drawer. This ensures the user can scroll
-              // through the options in the drawer if there isn't enough vertical
-              // space to fit everything.
-              child: ListView(
-                // Important: Remove any padding from the ListView.
-                padding: EdgeInsets.zero,
-                children: [
-                  SizedBox(
-                    height: 120,
-                    child: DrawerHeader(
-                      decoration: BoxDecoration(
-                        color: MyColors.yellow,
-                      ),
-                      child: Text(
-                        "User: " + MyNetwork.userInfo,
-                        style: TextStyle(
-                          fontSize: 30,
-                          color: MyColors.black,
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 60,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25.0),
+                          child: FadeInImage.assetNetwork(
+                              placeholder: 'assets/icons/loadingicon.png',
+                              image: MyNetwork.currentChanel.icon),
                         ),
                       ),
-                    ),
-                  ),
-                  ListTile(
-                    title: Card(
-                      color: MyColors.yellow,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const <Widget>[
-                          ListTile(
-                            leading: Icon(Icons.tv),
-                            title: Text('Channels'),
-                          ),
-                        ],
+                      Text(
+                        MyNetwork.currentChanel.name,
+                        style: TextStyle(color: MyColors.white, fontSize: 20),
                       ),
-                    ),
-                    onTap: () {
-                      // Update the state of the app
-                      // ...
-                      // Then close the drawer
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: Card(
-                      color: MyColors.yellow,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const <Widget>[
-                          ListTile(
-                            leading: Icon(Icons.favorite),
-                            title: Text('Favorites'),
-                          ),
-                        ],
+                      Expanded(child: SizedBox()),
+                      IconButton(
+                        icon: MyNetwork.currentChanel.isFavorite
+                            ? Icon(Icons.favorite)
+                            : Icon(Icons.favorite_border_outlined),
+                        onPressed: isFavPressed
+                            ? null
+                            : () => {
+                                  addFav(id: MyNetwork.currentChanel.id),
+                                },
                       ),
-                    ),
-                    onTap: () {
-                      // Update the state of the app
-                      // ...
-                      // Then close the drawer
-                      Navigator.pop(context);
-                    },
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return Container(
+                    color: index.isOdd ? Colors.white : Colors.black12,
+                    height: 100.0,
+                    child: Center(
+                      child: Text('$index', textScaleFactor: 5),
+                    ),
+                  );
+                },
+                childCount: 20,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

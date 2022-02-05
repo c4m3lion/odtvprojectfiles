@@ -2,6 +2,7 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -89,8 +90,13 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  void callBack() {
+    setState(() {});
+  }
+
   @override
   void initState() {
+    MyPrint.printError("ISLEYIR");
     super.initState();
     Wakelock.disable();
   }
@@ -111,6 +117,7 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       body: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
@@ -161,7 +168,10 @@ class _MainPageState extends State<MainPage> {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) => InkWell(
-                  onTap: () => {MyFunctions.channelButton(context, index)},
+                  onTap: () async => {
+                    await MyFunctions.channelButton(context, index),
+                    setState(() {}),
+                  },
                   child: Card(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
@@ -174,8 +184,7 @@ class _MainPageState extends State<MainPage> {
                       borderRadius: BorderRadius.circular(25.0),
                       child: FadeInImage.assetNetwork(
                         fit: BoxFit.fill,
-                        placeholder:
-                            'assets/icons/loadingicon.png', //kTransparentImage,
+                        placeholder: 'assets/icons/loadingicon.png',
                         image: MyNetwork.channels[index].icon,
                         imageErrorBuilder: (context, url, error) =>
                             SizedBox(width: 200, child: Icon(Icons.error)),
@@ -225,26 +234,31 @@ class _MainPageState extends State<MainPage> {
               height: 150,
               child: ListView.builder(
                 physics: ClampingScrollPhysics(),
-                itemCount: MyNetwork.channels.length,
+                itemCount: MyNetwork.favorites.length,
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) => Card(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: MyColors.green,
-                      width: 2,
+                itemBuilder: (context, index) => InkWell(
+                  onTap: () async => {
+                    await MyFunctions.FavoriteChannelButton(context, index),
+                    setState(() {}),
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: MyColors.green,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(25.0),
                     ),
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(25.0),
-                    child: FadeInImage.assetNetwork(
-                      fit: BoxFit.fill,
-                      placeholder:
-                          'assets/icons/loadingicon.png', //kTransparentImage,
-                      image: MyNetwork.channels[index].icon,
-                      imageErrorBuilder: (context, url, error) =>
-                          SizedBox(width: 200, child: new Icon(Icons.error)),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25.0),
+                      child: FadeInImage.assetNetwork(
+                        fit: BoxFit.fill,
+                        placeholder: 'assets/icons/loadingicon.png',
+                        image: MyNetwork.favorites[index].icon,
+                        imageErrorBuilder: (context, url, error) =>
+                            SizedBox(width: 200, child: Icon(Icons.error)),
+                      ),
                     ),
                   ),
                 ),

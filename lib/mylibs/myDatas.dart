@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 
+class MyVars {
+  bool isRefresh = false;
+}
+
 class MyColors {
   static Color yellow = const Color(0xffFFC914);
   static Color black = const Color(0xff2E282A);
@@ -40,9 +44,16 @@ class MyPrint {
 }
 
 class MyFunctions {
-  static void channelButton(BuildContext context, int index) {
+  static Future<void> channelButton(BuildContext context, int index) async {
     MyNetwork.isVideoPlaying = true;
     MyNetwork.currentChanel = MyNetwork.channels[index];
-    Navigator.pushNamed(context, '/loading');
+    await Navigator.pushNamed(context, '/loading');
+  }
+
+  static Future<void> FavoriteChannelButton(
+      BuildContext context, int index) async {
+    MyNetwork.isVideoPlaying = true;
+    MyNetwork.currentChanel = MyNetwork.favorites[index];
+    await Navigator.pushNamed(context, '/loading');
   }
 }
