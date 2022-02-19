@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
-import 'package:odtvprojectfiles/pages/main_page.dart';
 
 class BetterVideoPage extends StatefulWidget {
   const BetterVideoPage({Key? key}) : super(key: key);
@@ -165,14 +164,20 @@ class BetterVideoPageState extends State<BetterVideoPage> {
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   return Container(
-                    color: index.isOdd ? Colors.white : Colors.black12,
+                    color: index.isOdd ? Colors.white : Colors.grey,
                     height: 100.0,
-                    child: Center(
-                      child: Text('$index', textScaleFactor: 5),
-                    ),
+                    child: Column(children: [
+                      Text(MyNetwork.currectEPG[index].title),
+                      Flexible(
+                        child: Text(
+                          MyNetwork.currectEPG[index].description,
+                          overflow: TextOverflow.fade,
+                        ),
+                      ),
+                    ]),
                   );
                 },
-                childCount: 20,
+                childCount: MyNetwork.currectEPG.length,
               ),
             ),
           ],

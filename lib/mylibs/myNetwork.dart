@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart';
@@ -12,6 +13,7 @@ class MyNetwork {
   static List<Channel> channelsSeach = List.empty(growable: true);
   static List<Channel> favorites = List.empty(growable: true);
   static bool isVideoPlaying = false;
+  static StreamController<int> favController = StreamController<int>();
 
   Future<String> login({required String login, required String pass}) async {
     try {
@@ -210,6 +212,7 @@ class MyNetwork {
       }
       MyPrint.printError(k.length.toString());
     }
+    favController.add(favorites.length);
   }
 }
 

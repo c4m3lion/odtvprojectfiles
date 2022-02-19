@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 
@@ -50,7 +52,7 @@ class MyFunctions {
     await Navigator.pushNamed(context, '/loading');
   }
 
-  static Future<void> FavoriteChannelButton(
+  static Future<void> favoriteChannelButton(
       BuildContext context, int index) async {
     MyNetwork.isVideoPlaying = true;
     MyNetwork.currentChanel = MyNetwork.favorites[index];

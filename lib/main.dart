@@ -6,6 +6,7 @@ import 'package:odtvprojectfiles/mylibs/button_detector.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/pages/bettervideo_page.dart';
 import 'package:odtvprojectfiles/pages/channellist_page.dart';
+import 'package:odtvprojectfiles/pages/favoritelist_page.dart';
 import 'package:odtvprojectfiles/pages/loading_page.dart';
 import 'package:odtvprojectfiles/pages/login_page.dart';
 import 'package:odtvprojectfiles/pages/main_page.dart';
@@ -62,6 +63,7 @@ void main() {
         '/video2': (context) => VideoPlayerPage(),
         '/button': (context) => ButtonDetector(),
         '/channels': (context) => ChannelListPage(),
+        '/favorite': (context) => FavoriteListPage(),
         '/search': (context) => SearchPage(),
       },
     ),

@@ -212,12 +212,14 @@ class _MainPageState extends State<MainPage> {
                         text: "see all",
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            MyPrint.printWarning("see all pressed");
+                            Navigator.pushNamed(context, '/favorite');
                           },
                         style: TextStyle(color: MyColors.white, fontSize: 13)),
                   ),
                   InkWell(
-                    onTap: () => {},
+                    onTap: () => {
+                      Navigator.pushNamed(context, '/favorite'),
+                    },
                     child: RotatedBox(
                       quarterTurns: 1,
                       child: Icon(
@@ -232,36 +234,41 @@ class _MainPageState extends State<MainPage> {
             ),
             SizedBox(
               height: 150,
-              child: ListView.builder(
-                physics: ClampingScrollPhysics(),
-                itemCount: MyNetwork.favorites.length,
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) => InkWell(
-                  onTap: () async => {
-                    await MyFunctions.FavoriteChannelButton(context, index),
-                    setState(() {}),
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: MyColors.green,
-                        width: 2,
+              child: StreamBuilder(
+                stream: MyNetwork.favController.stream,
+                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                  return ListView.builder(
+                    physics: ClampingScrollPhysics(),
+                    itemCount: MyNetwork.favorites.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) => InkWell(
+                      onTap: () async => {
+                        await MyFunctions.favoriteChannelButton(context, index),
+                        setState(() {}),
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            color: MyColors.green,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25.0),
+                          child: FadeInImage.assetNetwork(
+                            fit: BoxFit.fill,
+                            placeholder: 'assets/icons/loadingicon.png',
+                            image: MyNetwork.favorites[index].icon,
+                            imageErrorBuilder: (context, url, error) =>
+                                SizedBox(width: 200, child: Icon(Icons.error)),
+                          ),
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(25.0),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(25.0),
-                      child: FadeInImage.assetNetwork(
-                        fit: BoxFit.fill,
-                        placeholder: 'assets/icons/loadingicon.png',
-                        image: MyNetwork.favorites[index].icon,
-                        imageErrorBuilder: (context, url, error) =>
-                            SizedBox(width: 200, child: Icon(Icons.error)),
-                      ),
-                    ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
           ],
@@ -296,8 +303,11 @@ class _MainPageState extends State<MainPage> {
                 color: MyColors.yellow,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[
+                  children: <Widget>[
                     ListTile(
+                      onTap: () => {
+                        Navigator.pushNamed(context, '/channels'),
+                      },
                       leading: Icon(Icons.tv),
                       title: Text('Channels'),
                     ),
@@ -316,10 +326,13 @@ class _MainPageState extends State<MainPage> {
                 color: MyColors.yellow,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[
+                  children: <Widget>[
                     ListTile(
+                      onTap: () => {
+                        Navigator.pushNamed(context, '/favorite'),
+                      },
                       leading: Icon(Icons.favorite),
-                      title: Text('Favorites'),
+                      title: Text('favorite'),
                     ),
                   ],
                 ),
