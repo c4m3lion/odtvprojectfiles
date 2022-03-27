@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
@@ -9,7 +10,8 @@ class SettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Column(
+        appBar: AppBar(title: Text("Settings").tr()),
+        body: ListView(
           children: [
             InkWell(
               onTap: () => {},
@@ -18,7 +20,7 @@ class SettingPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      title: Text('İstifadəçi'),
+                      title: Text('User').tr(),
                       subtitle: Text(MyNetwork.userInfo),
                     ),
                   ],
@@ -32,8 +34,8 @@ class SettingPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      title: Text('Package'),
-                      subtitle: Text("Sub1"),
+                      title: Text('Package').tr(),
+                      subtitle: Text("Sub1").tr(),
                     ),
                   ],
                 ),
@@ -46,8 +48,23 @@ class SettingPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      title: Text('Müddəti bitir'),
+                      title: Text('Expires').tr(),
                       subtitle: Text(MyNetwork.userInfo),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, '/language');
+              },
+              child: Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text('Language').tr(),
                     ),
                   ],
                 ),
@@ -66,7 +83,7 @@ class SettingPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      title: Text('Çıxış'),
+                      title: Text('Log out').tr(),
                     ),
                   ],
                 ),

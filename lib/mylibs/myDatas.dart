@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 
+class MyLanguage {
+  //static
+}
+
 class MyVars {
   bool isRefresh = false;
 }
@@ -46,7 +50,8 @@ class MyPrint {
 }
 
 class MyFunctions {
-  static Future<void> searchChannelButton(BuildContext context, int index) async {
+  static Future<void> searchChannelButton(
+      BuildContext context, int index) async {
     MyNetwork.isVideoPlaying = true;
     MyNetwork.currentChanel = MyNetwork.channelsSeach[index];
     MyPrint.printWarning(MyNetwork.currentChanel.name);

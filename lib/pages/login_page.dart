@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -154,6 +155,15 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Card(
+                        child: TextButton(
+                            onPressed: () =>
+                                {Navigator.pushNamed(context, "/language")},
+                            child: Text(context.locale.languageCode)),
+                      ),
+                    ),
                     !process
                         ? Image.asset(
                             "assets/icons/app_logo-removebg-preview.png",
@@ -168,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                       enabled: !process,
                       decoration: InputDecoration(
                         filled: true,
-                        hintText: "Account",
+                        hintText: "Account".tr(),
                         //labelText: "User",
                         errorText: _validateUser,
                       ),
@@ -188,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                       enabled: !process,
                       decoration: InputDecoration(
                         filled: true,
-                        hintText: "Password",
+                        hintText: "Password".tr(),
                         //labelText: "User",
                         errorText: _validatePass,
                       ),
@@ -218,7 +228,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "Remeber",
+                            text: "Remember".tr(),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 setState(() {
@@ -241,14 +251,14 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         onPressed:
                             process ? null : () => {checkInput(canGo: true)},
-                        child: Text("SIGN IN"),
+                        child: Text("Sign in").tr(),
                       ),
                     ),
                     SizedBox(
                       height: 40,
                     ),
                     Text(
-                      "Missing a subscription? Contact us!",
+                      "Missing a subscription?".tr() + "Contact us".tr() + "!",
                       style: TextStyle(color: Colors.grey),
                     ),
                     Row(

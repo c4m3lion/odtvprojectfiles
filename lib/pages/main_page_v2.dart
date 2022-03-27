@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
@@ -19,7 +20,7 @@ class _MainPagev2State extends State<MainPagev2> {
 
   void handleClick(String value) {
     switch (value) {
-      case 'Parametrlər':
+      case 'Settings':
         //TODO: add setting menu here
         MyPrint.printWarning("Setting Menu Oppend");
         Navigator.pushNamed(context, '/settings');
@@ -54,10 +55,10 @@ class _MainPagev2State extends State<MainPagev2> {
             PopupMenuButton<String>(
               onSelected: handleClick,
               itemBuilder: (BuildContext context) {
-                return {'Parametrlər'}.map((String choice) {
+                return {'Settings'}.map((String choice) {
                   return PopupMenuItem<String>(
                     value: choice,
-                    child: Text(choice),
+                    child: Text(choice).tr(),
                   );
                 }).toList();
               },
@@ -130,7 +131,7 @@ class _MainPagev2State extends State<MainPagev2> {
                         SizedBox(
                           width: 10,
                         ),
-                        Text('Kanallar'),
+                        Text('Channels').tr(),
                       ],
                     ),
                   ),
@@ -148,7 +149,7 @@ class _MainPagev2State extends State<MainPagev2> {
                         SizedBox(
                           width: 10,
                         ),
-                        Text('Favoritlər'),
+                        Text('Favorites').tr()
                       ],
                     ),
                   ),
@@ -174,7 +175,7 @@ class _MainPagev2State extends State<MainPagev2> {
                           SizedBox(
                             width: 10,
                           ),
-                          Text(MyNetwork.categorys[index].name),
+                          Text(MyNetwork.categorys[index].name.tr()),
                         ],
                       ),
                     ),

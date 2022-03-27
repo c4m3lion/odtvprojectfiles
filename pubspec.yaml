@@ -42,6 +42,8 @@ dependencies:
   chewie: ^1.2.2
   better_player: ^0.0.81
   intl: ^0.17.0
+  easy_localization: ^3.0.0
+  country_icons: ^2.0.2
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +80,7 @@ flutter:
   assets:
       - assets/
       - assets/icons/
+      - assets/translations/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
