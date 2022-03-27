@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 import 'package:http/http.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
@@ -10,10 +11,13 @@ class MyNetwork {
   static Channel currentChanel = Channel();
   static List<EPG> currectEPG = List.empty(growable: true);
   static List<Channel> channels = List.empty(growable: true);
+  static List<Category> categorys = List.empty(growable: true);
   static List<Channel> channelsSeach = List.empty(growable: true);
   static List<Channel> favorites = List.empty(growable: true);
   static bool isVideoPlaying = false;
   static StreamController<int> favController = StreamController<int>();
+  static String catId = "";
+  static String categroyName = "";
 
   Future<String> login({required String login, required String pass}) async {
     try {
@@ -59,6 +63,13 @@ class MyNetwork {
       if (data.containsKey("error")) {
         return data['error']['message'];
       } else {
+        for (var i in data['categories']) {
+          Category c = Category();
+          c.id = i['id'];
+          c.position = i['position'];
+          c.name = i['name'];
+          categorys.add(c);
+        }
         for (var i in data['channels']) {
           Channel c = Channel();
           c.id = i['id'];
@@ -188,8 +199,10 @@ class MyNetwork {
         for (var i in data['epg']) {
           EPG c = EPG();
           c.title = i['title'];
-          c.start = i['start'].toString();
-          c.end = i['end'].toString();
+          c.start = i['start'];
+          c.end = i['end'];
+          c.startdt = DateFormat('hh:mm').format(DateTime.fromMillisecondsSinceEpoch(c.start));
+          c.enddt = DateFormat('hh:mm').format(DateTime.fromMillisecondsSinceEpoch(c.end));
           c.description = i['description'];
           currectEPG.add(c);
         }
@@ -228,10 +241,24 @@ class Channel {
   bool isFavorite = false;
 }
 
+class Category {
+  String id = "";
+  String name = "";
+  int position = 0;
+}
+
 class EPG {
   String id = "";
   String title = "";
-  String start = "";
-  String end = "";
+  int start = 0;
+  int end = 0;
   String description = "";
+  String startdt = "";
+  String enddt =  "";
+
+}
+
+class UserInfos {
+  String login = "";
+  String expireDate = "";
 }

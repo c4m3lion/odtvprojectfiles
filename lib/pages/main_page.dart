@@ -2,10 +2,8 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:wakelock/wakelock.dart';
 
 class MainPage extends StatefulWidget {

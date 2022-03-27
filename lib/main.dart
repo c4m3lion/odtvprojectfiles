@@ -1,16 +1,20 @@
 // ignore_for_file: prefer_const_constructors
+
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:odtvprojectfiles/mylibs/button_detector.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
-import 'package:odtvprojectfiles/pages/bettervideo_page.dart';
+import 'package:odtvprojectfiles/pages/bettervideo_pagev2.dart';
+import 'package:odtvprojectfiles/pages/categorypage.dart';
 import 'package:odtvprojectfiles/pages/channellist_page.dart';
 import 'package:odtvprojectfiles/pages/favoritelist_page.dart';
 import 'package:odtvprojectfiles/pages/loading_page.dart';
 import 'package:odtvprojectfiles/pages/login_page.dart';
-import 'package:odtvprojectfiles/pages/main_page.dart';
+import 'package:odtvprojectfiles/pages/main_page_v2.dart';
 import 'package:odtvprojectfiles/pages/searchpage.dart';
+import 'package:odtvprojectfiles/pages/setting_page.dart';
 import 'package:odtvprojectfiles/pages/video_page.dart';
 import 'package:odtvprojectfiles/pages/videoplayer_page.dart';
 
@@ -31,33 +35,26 @@ void main() {
     },
     child: MaterialApp(
       theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          scaffoldBackgroundColor: MyColors.black,
-          backgroundColor: MyColors.black,
-          appBarTheme: AppBarTheme(
-            backgroundColor: MyColors.yellow,
-            foregroundColor: MyColors.black,
-          ),
-          primaryColor: MyColors.yellow,
-          focusColor: MyColors.orange,
-          highlightColor: MyColors.orange,
-          buttonTheme: ButtonThemeData(
-            buttonColor: MyColors.yellow,
-            textTheme: ButtonTextTheme
-                .primary, //  <-- this auto selects the right color
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              primary: MyColors.yellow, // Button color
-              onPrimary: MyColors.white, // Text color
-            ),
-          ),
-          iconTheme: IconThemeData(color: MyColors.orange)),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        scaffoldBackgroundColor: MyColors.white,
+        backgroundColor: MyColors.white,
+        textTheme: TextTheme(),
+        appBarTheme: AppBarTheme(
+          backgroundColor: MyColors.white,
+          foregroundColor: MyColors.black,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+              //primary: MyColors.yellow, // Button color
+              //onPrimary: MyColors.white, // Text color
+              ),
+        ),
+      ),
       initialRoute: '/login',
       routes: {
         '/login': (context) => LoginPage(),
         '/loading': (context) => LoadingPage(),
-        '/main': (context) => MainPage(),
+        '/main': (context) => MainPagev2(),
         '/oldvideo': (context) => VideoPage(),
         '/video': (context) => BetterVideoPage(),
         '/video2': (context) => VideoPlayerPage(),
@@ -65,6 +62,8 @@ void main() {
         '/channels': (context) => ChannelListPage(),
         '/favorite': (context) => FavoriteListPage(),
         '/search': (context) => SearchPage(),
+        '/settings': (context) => SettingPage(),
+        '/category': (context) => CategoryPage(),
       },
     ),
   ));

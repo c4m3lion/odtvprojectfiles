@@ -41,6 +41,7 @@ dependencies:
   wakelock: ^0.5.6
   chewie: ^1.2.2
   better_player: ^0.0.81
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

@@ -109,7 +109,7 @@ class _SearchPageState extends State<SearchPage> {
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             itemBuilder: (context, index) => InkWell(
-              onTap: () => {MyFunctions.channelButton(context, index)},
+              onTap: () => {MyFunctions.searchChannelButton(context, index)},
               child: SizedBox(
                 height: 10,
                 child: Card(

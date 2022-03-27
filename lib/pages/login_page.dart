@@ -3,6 +3,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:loading_gifs/loading_gifs.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 import 'package:wakelock/wakelock.dart';
@@ -150,30 +151,24 @@ class _LoginPageState extends State<LoginPage> {
               width: 300,
               child: SingleChildScrollView(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: Text(
-                        "Login",
-                        style: TextStyle(
-                          color: MyColors.white,
-                          fontSize: 36,
-                        ),
-                      ),
+                    !process
+                        ? Image.asset(
+                            "assets/icons/app_logo-removebg-preview.png",
+                            scale: 1.3,
+                          )
+                        : CircularProgressIndicator(),
+                    SizedBox(
+                      height: 80,
                     ),
                     TextField(
                       //autofocus: true,
                       enabled: !process,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(color: MyColors.orange)),
                         filled: true,
-                        fillColor: MyColors.yellow,
-                        focusColor: MyColors.cyan,
-                        hintText: "Enter login",
+                        hintText: "Account",
                         //labelText: "User",
                         errorText: _validateUser,
                       ),
@@ -190,27 +185,23 @@ class _LoginPageState extends State<LoginPage> {
                       height: 6,
                     ),
                     TextField(
-                        enabled: !process,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(color: MyColors.orange)),
-                          filled: true,
-                          fillColor: MyColors.yellow,
-                          focusColor: MyColors.cyan,
-                          hintText: "Enter password",
-                          //labelText: "User",
-                          errorText: _validatePass,
-                        ),
-                        controller: passText,
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        keyboardType: TextInputType.number,
-                        onSubmitted: (value) {
-                          checkInput(canGo: false);
-                        },
-                        textInputAction: TextInputAction.next),
+                      enabled: !process,
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: "Password",
+                        //labelText: "User",
+                        errorText: _validatePass,
+                      ),
+                      controller: passText,
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (value) {
+                        checkInput(canGo: false);
+                      },
+                      textInputAction: TextInputAction.next,
+                    ),
                     SizedBox(
                       height: 6,
                     ),
@@ -219,7 +210,6 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Checkbox(
                           value: isSave,
-                          fillColor: MaterialStateProperty.all(MyColors.yellow),
                           onChanged: (bool? value) {
                             setState(() {
                               isSave = value!;
@@ -236,7 +226,7 @@ class _LoginPageState extends State<LoginPage> {
                                 });
                               },
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -246,27 +236,43 @@ class _LoginPageState extends State<LoginPage> {
                       height: 10,
                     ),
                     SizedBox(
-                      width: 100,
+                      width: 250,
                       height: 50,
                       child: ElevatedButton(
                         onPressed:
                             process ? null : () => {checkInput(canGo: true)},
-                        child: Text("Login"),
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(MyColors.green),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                              side: BorderSide(
-                                width: 0.0,
-                              ),
-                            ),
-                          ),
-                        ),
+                        child: Text("SIGN IN"),
                       ),
                     ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Text(
+                      "Missing a subscription? Contact us!",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () => {},
+                          child: Icon(
+                            Icons.facebook,
+                            size: 40,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        InkWell(
+                          onTap: () => {},
+                          child: Icon(
+                            Icons.call,
+                            size: 40,
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),

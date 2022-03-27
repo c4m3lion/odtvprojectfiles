@@ -46,6 +46,13 @@ class MyPrint {
 }
 
 class MyFunctions {
+  static Future<void> searchChannelButton(BuildContext context, int index) async {
+    MyNetwork.isVideoPlaying = true;
+    MyNetwork.currentChanel = MyNetwork.channelsSeach[index];
+    MyPrint.printWarning(MyNetwork.currentChanel.name);
+    await Navigator.pushNamed(context, '/loading');
+  }
+
   static Future<void> channelButton(BuildContext context, int index) async {
     MyNetwork.isVideoPlaying = true;
     MyNetwork.currentChanel = MyNetwork.channels[index];
