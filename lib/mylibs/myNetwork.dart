@@ -11,6 +11,7 @@ class MyNetwork {
   static Channel currentChanel = Channel();
   static List<EPG> currectEPG = List.empty(growable: true);
   static List<Channel> channels = List.empty(growable: true);
+  static List<Channel> currentChannels = List.empty(growable: true);
   static List<Category> categorys = List.empty(growable: true);
   static List<Channel> channelsSeach = List.empty(growable: true);
   static List<Channel> favorites = List.empty(growable: true);
@@ -63,6 +64,18 @@ class MyNetwork {
       if (data.containsKey("error")) {
         return data['error']['message'];
       } else {
+        categorys.clear();
+        channels.clear();
+        Category c1 = Category();
+        c1.id = "favorites";
+        c1.position = -1;
+        c1.name = "Favorites";
+        categorys.add(c1);
+        c1 = Category();
+        c1.id = "channel";
+        c1.position = -2;
+        c1.name = "Channels";
+        categorys.add(c1);
         for (var i in data['categories']) {
           Category c = Category();
           c.id = i['id'];
@@ -82,6 +95,7 @@ class MyNetwork {
           channels.add(c);
         }
         currentChanel = channels[0];
+        currentChannels = channels;
         return "OK";
       }
     } catch (e) {
@@ -183,6 +197,7 @@ class MyNetwork {
 
   Future<String> getEPG({String channel_id = "none"}) async {
     channel_id == "none" ? channel_id = currentChanel.id : null;
+    currectEPG.clear();
     try {
       Response response = await get(
         Uri.parse("https://mw.odtv.az/api/v1/epg/$channel_id"),
@@ -201,8 +216,10 @@ class MyNetwork {
           c.title = i['title'];
           c.start = i['start'];
           c.end = i['end'];
-          c.startdt = DateFormat('hh:mm').format(DateTime.fromMillisecondsSinceEpoch(c.start));
-          c.enddt = DateFormat('hh:mm').format(DateTime.fromMillisecondsSinceEpoch(c.end));
+          c.startdt = DateFormat('hh:mm')
+              .format(DateTime.fromMillisecondsSinceEpoch(c.start));
+          c.enddt = DateFormat('hh:mm')
+              .format(DateTime.fromMillisecondsSinceEpoch(c.end));
           c.description = i['description'];
           currectEPG.add(c);
         }
@@ -254,11 +271,14 @@ class EPG {
   int end = 0;
   String description = "";
   String startdt = "";
-  String enddt =  "";
-
+  String enddt = "";
 }
 
 class UserInfos {
   String login = "";
   String expireDate = "";
+}
+
+class MyLocalData {
+  static int selectedChannelPage = 0;
 }

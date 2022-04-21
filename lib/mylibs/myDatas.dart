@@ -47,6 +47,31 @@ class MyPrint {
       },
     );
   }
+
+  static void dialog(BuildContext context, String _title, String _content) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(_title),
+          content: Text(_content),
+          actions: [
+            ElevatedButton(
+              autofocus: true,
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class MyPaints {
+  static Color selectedColor = Colors.cyan;
 }
 
 class MyFunctions {

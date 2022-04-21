@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   String? _validateUser = null;
   String? _validatePass = null;
   bool process = false;
+  String statusLogin = "";
 
   ///Functions///////////////////////////////
 
@@ -64,10 +65,10 @@ class _LoginPageState extends State<LoginPage> {
       await storage.write(key: "isSave", value: isSave.toString());
     }
     MyPrint.printWarning("login started");
-    String _res = await MyNetwork().login(login: user, pass: pass);
+    String _res = "OK";
     if (_res == "OK") {
       MyPrint.printWarning(MyNetwork.token);
-      Navigator.pushReplacementNamed(context, "/loading");
+      validateInput(context);
     } else {
       MyPrint.printError(_res);
       if (_res == "not enough data") {
@@ -118,6 +119,38 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void validateInput(BuildContext context) async {
+    setState(() {
+      statusLogin = "Looking for user...";
+      process = true;
+    });
+    String res =
+        await MyNetwork().login(login: userText.text, pass: passText.text);
+    if (res != "OK") {
+      MyPrint.dialog(context, "Wrong credentials!",
+          "Please enter right user informations!");
+      setState(() {
+        process = false;
+      });
+      return;
+    }
+    setState(() {
+      statusLogin = "Getting Channels...";
+    });
+    res = await MyNetwork().getChannels();
+    String crt = await storage.read(key: "currentChannel") ?? "0";
+    MyNetwork.currentChanel = MyNetwork.channels[int.parse(crt)];
+    if (res == "OK") {
+      Navigator.pushReplacementNamed(context, '/video');
+    } else {
+      MyPrint.dialog(context, "Wrong credentials!",
+          "Please enter right user informations!");
+      setState(() {
+        process = false;
+      });
+    }
+  }
+
   /////////////////
   @override
   void dispose() {
@@ -137,160 +170,129 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Row(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
+            Center(
               child: SizedBox(
-                height: double.infinity,
-              ),
-            ),
-            SizedBox(
-              width: 300,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Card(
-                        child: TextButton(
-                            onPressed: () =>
-                                {Navigator.pushNamed(context, "/language")},
-                            child: Text(context.locale.languageCode)),
-                      ),
-                    ),
-                    !process
-                        ? Image.asset(
-                            "assets/icons/app_logo-removebg-preview.png",
-                            scale: 1.3,
-                          )
-                        : CircularProgressIndicator(),
-                    SizedBox(
-                      height: 80,
-                    ),
-                    TextField(
-                      //autofocus: true,
-                      enabled: !process,
-                      decoration: InputDecoration(
-                        filled: true,
-                        hintText: "Account".tr(),
-                        //labelText: "User",
-                        errorText: _validateUser,
-                      ),
-                      controller: userText,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      keyboardType: TextInputType.number,
-                      onSubmitted: (value) {
-                        checkInput();
-                      },
-                      textInputAction: TextInputAction.next,
-                    ),
-                    SizedBox(
-                      height: 6,
-                    ),
-                    TextField(
-                      enabled: !process,
-                      decoration: InputDecoration(
-                        filled: true,
-                        hintText: "Password".tr(),
-                        //labelText: "User",
-                        errorText: _validatePass,
-                      ),
-                      controller: passText,
-                      obscureText: true,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      keyboardType: TextInputType.number,
-                      onSubmitted: (value) {
-                        checkInput(canGo: false);
-                      },
-                      textInputAction: TextInputAction.next,
-                    ),
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Checkbox(
-                          value: isSave,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isSave = value!;
-                            });
-                          },
+                width: 400,
+                child: Card(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          "Login",
+                          style: TextStyle(fontSize: 30),
                         ),
-                        RichText(
-                          text: TextSpan(
-                            text: "Remember".tr(),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                setState(() {
-                                  isSave = !isSave;
-                                });
-                              },
-                            style: const TextStyle(
-                              color: Colors.black,
+                      ),
+                      const SizedBox(
+                        height: 40,
+                        child: Divider(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 60),
+                        child: TextFormField(
+                            enabled: !process,
+                            decoration: const InputDecoration(
+                              labelText: 'User',
+                            ),
+                            validator: (text) {
+                              if (text == null || text.isEmpty) {
+                                return 'Provide an user';
+                              }
+                              return null;
+                            },
+                            controller: userText,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            keyboardType: TextInputType.number,
+                            onEditingComplete: () =>
+                                FocusScope.of(context).nextFocus()),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 60),
+                        child: TextFormField(
+                          enabled: !process,
+                          decoration: const InputDecoration(
+                            labelText: 'Password',
+                          ),
+                          validator: (text) {
+                            if (text == null || text.isEmpty) {
+                              return 'Provide an user';
+                            }
+                            return null;
+                          },
+                          controller: passText,
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Checkbox(
+                            value: isSave,
+                            fillColor:
+                                MaterialStateProperty.all(MyColors.yellow),
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isSave = value!;
+                              });
+                            },
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              text: "Remeber",
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  setState(() {
+                                    isSave = !isSave;
+                                  });
+                                },
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: 250,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed:
-                            process ? null : () => {checkInput(canGo: true)},
-                        child: Text("Sign in").tr(),
+                        ],
                       ),
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Text(
-                      "Missing a subscription?".tr() + "Contact us".tr() + "!",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () => {},
-                          child: Icon(
-                            Icons.facebook,
-                            size: 40,
-                          ),
+                      SizedBox(
+                        height: 100,
+                        child: Center(
+                          child: process
+                              ? Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const LinearProgressIndicator(),
+                                    Text(statusLogin)
+                                  ],
+                                )
+                              : ElevatedButton(
+                                  onPressed: () {
+                                    process ? null : checkInput(canGo: true);
+                                  },
+                                  child: const Text("Continue"),
+                                ),
                         ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        InkWell(
-                          onTap: () => {},
-                          child: Icon(
-                            Icons.call,
-                            size: 40,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            Expanded(
-                child: SizedBox(
-              height: double.infinity,
-            )),
           ],
         ),
       ),

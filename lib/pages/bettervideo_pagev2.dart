@@ -18,7 +18,10 @@ class BetterVideoPageState extends State<BetterVideoPage> {
   bool isLandscape = false;
   int indexOpenCard = -1;
   bool isFavPressed = false;
-  void getVideo() {
+  bool loaded = false;
+  void getVideo() async {
+    loaded = false;
+    MyNetwork.currentChanel.playBackUrl = await MyNetwork().getPlayBack();
     MyPrint.printWarning(MyNetwork.currentChanel.playBackUrl);
     BetterPlayerDataSource betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
@@ -57,6 +60,9 @@ class BetterVideoPageState extends State<BetterVideoPage> {
               ]),
         ),
         betterPlayerDataSource: betterPlayerDataSource);
+    setState(() {
+      loaded = true;
+    });
   }
 
   void addFav({required String id}) async {
@@ -120,18 +126,21 @@ class BetterVideoPageState extends State<BetterVideoPage> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    InkWell(
-                      onTap: () => {_betterPlayerController.toggleFullScreen()},
-                      child: SizedBox(
-                        height: 200,
-                        child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: BetterPlayer(
-                            controller: _betterPlayerController,
+                    !loaded
+                        ? CircularProgressIndicator()
+                        : InkWell(
+                            onTap: () =>
+                                {_betterPlayerController.toggleFullScreen()},
+                            child: SizedBox(
+                              height: 200,
+                              child: AspectRatio(
+                                aspectRatio: 16 / 9,
+                                child: BetterPlayer(
+                                  controller: _betterPlayerController,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -164,8 +173,11 @@ class BetterVideoPageState extends State<BetterVideoPage> {
                       ),
                       Expanded(child: SizedBox()),
                       IconButton(
-                          onPressed: () =>
-                              {_betterPlayerController.toggleFullScreen()},
+                          onPressed: () => {
+                                loaded
+                                    ? _betterPlayerController.toggleFullScreen()
+                                    : null
+                              },
                           icon: Icon(Icons.fullscreen)),
                       IconButton(
                         icon: MyNetwork.currentChanel.isFavorite
