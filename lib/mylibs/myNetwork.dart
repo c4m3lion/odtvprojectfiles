@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 
 import 'package:http/http.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 
 class MyNetwork {
+  FlutterSecureStorage storage = FlutterSecureStorage();
   static String token = "";
   static String userInfo = "";
   static Channel currentChanel = Channel();
@@ -83,6 +86,7 @@ class MyNetwork {
           c.name = i['name'];
           categorys.add(c);
         }
+        int l = 0;
         for (var i in data['channels']) {
           Channel c = Channel();
           c.id = i['id'];
@@ -92,7 +96,13 @@ class MyNetwork {
           c.category = i['category'];
           c.archive = i['archive'];
           c.icon = i['icon'];
+          c.pos = l;
+          l++;
           channels.add(c);
+        }
+        channels.sort((a, b) => a.position.compareTo(b.position));
+        for (var i in channels) {
+          print(i.name + " " + i.lcn.toString());
         }
         currentChanel = channels[0];
         currentChannels = channels;
@@ -244,6 +254,20 @@ class MyNetwork {
     }
     favController.add(favorites.length);
   }
+
+  void changeChannel(int value) async {
+    int _k = MyNetwork.currentChanel.pos + value;
+    if (_k >= MyNetwork.channels.length) {
+      _k = 0;
+    }
+    if (_k <= 0) {
+      _k = MyNetwork.channels.length - 1;
+    }
+    MyNetwork.currentChanel = MyNetwork.channels[_k];
+    MyLocalData.selectedCurrentChannel = MyNetwork.channels[_k].id;
+    await storage.write(
+        key: "currentChannel", value: MyNetwork.currentChanel.pos.toString());
+  }
 }
 
 class Channel {
@@ -256,6 +280,7 @@ class Channel {
   String icon = "";
   String playBackUrl = "";
   bool isFavorite = false;
+  int pos = 0;
 }
 
 class Category {
@@ -280,5 +305,8 @@ class UserInfos {
 }
 
 class MyLocalData {
-  static int selectedChannelPage = 0;
+  static int selectedChannelPage = -1;
+  static String selectedCurrentChannel = "0";
+
+  static bool isCahnnalPart = false;
 }
