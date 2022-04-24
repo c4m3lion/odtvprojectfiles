@@ -48,13 +48,13 @@ void main() async {
           'assets/translations', // <-- change the path of the translation files
       fallbackLocale: Locale('en'),
       assetLoader: CodegenLoader(),
-      child: MyApp(),
+      child: MyAppAndroid(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyAppAndroid extends StatelessWidget {
+  const MyAppAndroid({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

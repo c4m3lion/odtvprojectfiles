@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:odtvprojectfiles/main_old.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/screens/home_page.dart';
 import 'package:odtvprojectfiles/screens/login_page.dart';
@@ -21,6 +23,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+  bool isTV =
+      androidInfo.systemFeatures.contains('android.software.leanback_only');
   runApp(
     EasyLocalization(
       supportedLocales: [
@@ -33,7 +39,7 @@ void main() async {
           'assets/translations', // <-- change the path of the translation files
       fallbackLocale: Locale('en'),
       assetLoader: CodegenLoader(),
-      child: MyApp(),
+      child: isTV ? MyApp() : MyAppAndroid(),
     ),
   );
 }
