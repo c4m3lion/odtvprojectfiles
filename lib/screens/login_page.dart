@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final passText = TextEditingController();
   final keyForm = GlobalKey<FormState>();
   final storage = const FlutterSecureStorage();
+  bool facebokSelected = false;
 
   bool isSave = false;
   bool loading = false;
@@ -74,10 +76,13 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     String crt = await storage.read(key: "currentChannel") ?? "0";
-    int k = int.tryParse(crt) ?? 0;
-    MyNetwork.currentChanel = MyNetwork.channels[k];
+    MyNetwork().loadChannelById(crt);
 
     Navigator.pushReplacementNamed(context, '/home');
+  }
+
+  void _launchUrl(String _url) async {
+    if (!await launchUrl(Uri.parse(_url))) throw 'Could not launch $_url';
   }
 
   void onInit() async {
@@ -223,6 +228,39 @@ class _LoginPageState extends State<LoginPage> {
                                 ],
                               ),
                             ),
+                      const Divider(indent: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onFocusChange: (value) {
+                              setState(() {
+                                facebokSelected = value;
+                              });
+                            },
+                            child: CircleAvatar(
+                              radius: facebokSelected ? 30 : 20,
+                              backgroundImage: AssetImage(
+                                'assets/icons/facebook_icon.png',
+                              ),
+                            ),
+                            onTap: () {
+                              _launchUrl(
+                                  "https://www.facebook.com/Smartsystemstechnology");
+                            },
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          CircleAvatar(
+                            backgroundColor: Colors.white,
+                            backgroundImage: AssetImage(
+                              'assets/icons/telephone.png',
+                            ),
+                          ),
+                          Text("012952"),
+                        ],
+                      )
                     ],
                   ),
                 ),

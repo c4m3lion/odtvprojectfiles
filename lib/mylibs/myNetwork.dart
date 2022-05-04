@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyNetwork {
   FlutterSecureStorage storage = FlutterSecureStorage();
@@ -13,6 +15,7 @@ class MyNetwork {
   static String userInfo = "";
   static Channel currentChanel = Channel();
   static List<EPG> currectEPG = List.empty(growable: true);
+  static List<MyEpgClass> currectPageEPG = List.empty(growable: true);
   static List<Channel> channels = List.empty(growable: true);
   static List<Channel> currentChannels = List.empty(growable: true);
   static List<Category> categorys = List.empty(growable: true);
@@ -55,6 +58,7 @@ class MyNetwork {
   }
 
   Future<String> getChannels() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       Response response = await get(
         Uri.parse("https://mw.odtv.az/api/v1/channels"),
@@ -64,6 +68,7 @@ class MyNetwork {
       );
       MyPrint.printWarning(response.body);
       Map data = jsonDecode(response.body);
+
       if (data.containsKey("error")) {
         return data['error']['message'];
       } else {
@@ -96,6 +101,13 @@ class MyNetwork {
           c.category = i['category'];
           c.archive = i['archive'];
           c.icon = i['icon'];
+          String? sharedData = prefs.getString(c.id + "vid");
+          if (sharedData == null) {
+            c.playBackUrl = await getPlayBack(channel_id: c.id);
+            await prefs.setString(c.id + "vid", c.playBackUrl);
+          } else {
+            c.playBackUrl = sharedData;
+          }
           c.pos = l;
           l++;
           channels.add(c);
@@ -106,6 +118,7 @@ class MyNetwork {
         }
         currentChanel = channels[0];
         currentChannels = channels;
+        final String encodedData = Channel.encode(channels);
         return "OK";
       }
     } catch (e) {
@@ -215,23 +228,44 @@ class MyNetwork {
           'oms-client': token,
         },
       );
-      MyPrint.printWarning(response.body);
       Map data = jsonDecode(response.body);
       if (data.containsKey("error")) {
         return data['error']['message'];
       } else {
         currectEPG.clear();
+        currectPageEPG.clear();
+        List<EPG> tempEpg = List.empty(growable: true);
+        var tempTodayTime = "--";
         for (var i in data['epg']) {
           EPG c = EPG();
           c.title = i['title'];
           c.start = i['start'];
           c.end = i['end'];
-          c.startdt = DateFormat('hh:mm')
+          c.startDate = DateTime.fromMillisecondsSinceEpoch(c.start);
+          c.endDate = DateTime.fromMillisecondsSinceEpoch(c.end);
+          c.startdt = DateFormat('HH:mm')
+              .format(DateTime.fromMillisecondsSinceEpoch(c.start));
+          var tempTime = DateFormat('dd/MM')
               .format(DateTime.fromMillisecondsSinceEpoch(c.start));
           c.enddt = DateFormat('hh:mm')
               .format(DateTime.fromMillisecondsSinceEpoch(c.end));
           c.description = i['description'];
+          if (tempTodayTime == "--") {
+            tempTodayTime = tempTime;
+          }
+          if (tempTime != tempTodayTime) {
+            currectPageEPG.add(MyEpgClass(tempEpg, tempTodayTime));
+            tempTodayTime = tempTime;
+            tempEpg.clear();
+          }
+          tempEpg.add(c);
           currectEPG.add(c);
+        }
+
+        if (currectPageEPG.length > 0) {
+          currectPageEPG.add(MyEpgClass(tempEpg, tempTodayTime));
+          print(currectPageEPG[currectPageEPG.length - 1].date);
+          tempEpg.clear();
         }
         return "OK";
       }
@@ -248,6 +282,7 @@ class MyNetwork {
           .where(((element) => element.id.toLowerCase().contains(i)))
           .toList();
       if (k.isNotEmpty) {
+        k[0].isFavorite = true;
         favorites.add(k[0]);
       }
       MyPrint.printError(k.length.toString());
@@ -256,17 +291,26 @@ class MyNetwork {
   }
 
   void changeChannel(int value) async {
-    int _k = MyNetwork.currentChanel.pos + value;
-    if (_k >= MyNetwork.channels.length) {
+    int _k = MyLocalData.selectedCurrentChannel + value;
+    if (_k >= MyNetwork.currentChannels.length) {
       _k = 0;
     }
-    if (_k <= 0) {
-      _k = MyNetwork.channels.length - 1;
+    if (_k < 0) {
+      _k = MyNetwork.currentChannels.length - 1;
     }
-    MyNetwork.currentChanel = MyNetwork.channels[_k];
-    MyLocalData.selectedCurrentChannel = MyNetwork.channels[_k].id;
+    MyNetwork.currentChanel = MyNetwork.currentChannels[_k];
+    MyLocalData.selectedCurrentChannel = _k;
     await storage.write(
-        key: "currentChannel", value: MyNetwork.currentChanel.pos.toString());
+        key: "currentChannel", value: MyNetwork.currentChanel.id.toString());
+  }
+
+  void loadChannelById(String id) {
+    MyNetwork.currentChanel = MyNetwork.channels.firstWhere(
+      (element) => element.id == id,
+      orElse: () {
+        return MyNetwork.channels[0];
+      },
+    );
   }
 }
 
@@ -281,6 +325,55 @@ class Channel {
   String playBackUrl = "";
   bool isFavorite = false;
   int pos = 0;
+
+  Channel({
+    this.id = "",
+    this.lcn = 1,
+    this.position = 1,
+    this.name = "",
+    this.category = "",
+    this.archive = false,
+    this.icon = "",
+    this.playBackUrl = "",
+    this.isFavorite = false,
+    this.pos = 0,
+  });
+
+  factory Channel.fromJson(Map<String, dynamic> jsonData) {
+    return Channel(
+      id: jsonData['id'],
+      lcn: jsonData['lcn'],
+      position: jsonData["position"],
+      name: jsonData['name'],
+      category: jsonData['category'],
+      archive: jsonData['archive'],
+      icon: jsonData['icon'],
+      playBackUrl: jsonData['playBackURL'] ?? "",
+      isFavorite: jsonData['isFavorite'],
+      pos: jsonData['pos'],
+    );
+  }
+  static Map<String, dynamic> toMap(Channel chan) => {
+        'id': chan.id,
+        'lcn': chan.lcn,
+        'position': chan.position,
+        'name': chan.name,
+        'category': chan.category,
+        'archive': chan.archive,
+        'icon': chan.icon,
+        'playBackUrl': chan.playBackUrl,
+        'isFavorite': chan.isFavorite,
+        'pos': chan.pos,
+      };
+  static String encode(List<Channel> chans) => json.encode(
+        chans
+            .map<Map<String, dynamic>>((music) => Channel.toMap(music))
+            .toList(),
+      );
+  static List<Channel> decode(String chans) =>
+      (json.decode(chans) as List<dynamic>)
+          .map<Channel>((item) => Channel.fromJson(item))
+          .toList();
 }
 
 class Category {
@@ -297,6 +390,8 @@ class EPG {
   String description = "";
   String startdt = "";
   String enddt = "";
+  var startDate = DateTime(1);
+  var endDate = DateTime(1);
 }
 
 class UserInfos {
@@ -306,7 +401,13 @@ class UserInfos {
 
 class MyLocalData {
   static int selectedChannelPage = -1;
-  static String selectedCurrentChannel = "0";
+  static int selectedCurrentChannel = -1;
 
   static bool isCahnnalPart = false;
+}
+
+class MyEpgClass {
+  MyEpgClass(this.epgs, this.date);
+  List<EPG> epgs = List.empty(growable: true);
+  String date = "11_April";
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 
 class MyLanguage {
@@ -75,6 +76,7 @@ class MyPaints {
 }
 
 class MyFunctions {
+  final storage = const FlutterSecureStorage();
   static Future<void> searchChannelButton(
       BuildContext context, int index) async {
     MyNetwork.isVideoPlaying = true;
@@ -94,5 +96,13 @@ class MyFunctions {
     MyNetwork.isVideoPlaying = true;
     MyNetwork.currentChanel = MyNetwork.favorites[index];
     await Navigator.pushNamed(context, '/loading');
+  }
+
+  void saveStorage(String key, String value) async {
+    await storage.write(key: key, value: value);
+  }
+
+  Future<String> getStorage(String key) async {
+    return await storage.read(key: key) ?? "";
   }
 }

@@ -3,8 +3,10 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class BetterVideoPage extends StatefulWidget {
   const BetterVideoPage({Key? key}) : super(key: key);
@@ -17,11 +19,9 @@ class BetterVideoPageState extends State<BetterVideoPage> {
   late BetterPlayerController _betterPlayerController;
   bool isLandscape = false;
   int indexOpenCard = -1;
+  int currentActiveEPG = 0;
   bool isFavPressed = false;
-  bool loaded = false;
-  void getVideo() async {
-    loaded = false;
-    MyNetwork.currentChanel.playBackUrl = await MyNetwork().getPlayBack();
+  void getVideo() {
     MyPrint.printWarning(MyNetwork.currentChanel.playBackUrl);
     BetterPlayerDataSource betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
@@ -44,25 +44,42 @@ class BetterVideoPageState extends State<BetterVideoPage> {
             DeviceOrientation.portraitUp,
           ],
           controlsConfiguration: BetterPlayerControlsConfiguration(
-              playerTheme: BetterPlayerTheme.material,
+              playerTheme: BetterPlayerTheme.cupertino,
               enableProgressBar: false,
               enableProgressText: false,
               enableSkips: false,
               enableFullscreen: true,
               enablePlaybackSpeed: false,
               enableAudioTracks: false,
-              showControls: false,
+              showControls: true,
               overflowMenuCustomItems: [
                 BetterPlayerOverflowMenuItem(
-                    Icons.favorite_outline, "Add to favorites", () {}),
-                BetterPlayerOverflowMenuItem(
-                    Icons.info_outline, "Show Epg", () {})
+                    MyNetwork.currentChanel.isFavorite
+                        ? Icons.favorite
+                        : Icons.favorite_border_outlined,
+                    "Add to favorites", () {
+                  addFav(id: MyNetwork.currentChanel.id);
+                }),
               ]),
         ),
         betterPlayerDataSource: betterPlayerDataSource);
-    setState(() {
-      loaded = true;
-    });
+  }
+
+  int _scrollToIndex() {
+    for (int i = 0; i <= MyNetwork.currectEPG.length; i++) {
+      bool temp = DateTime.now().isAfter(MyNetwork.currectEPG[i].startDate) &&
+          DateTime.now().isBefore(MyNetwork.currectEPG[i].endDate);
+
+      if (temp) {
+        currentActiveEPG = i;
+        if (i > 0) {
+          return i - 1;
+        }
+        return i;
+      }
+    }
+    currentActiveEPG = 0;
+    return 0;
   }
 
   void addFav({required String id}) async {
@@ -117,118 +134,116 @@ class BetterVideoPageState extends State<BetterVideoPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverToBoxAdapter(
-              child: Container(
-                height: 200,
-                color: Colors.black,
-                child: Stack(
-                  alignment: Alignment.center,
+        body: Column(
+          children: <Widget>[
+            Container(
+              height: 200,
+              width: double.infinity,
+              color: Colors.black,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    height: 200,
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: BetterPlayer(
+                        controller: _betterPlayerController,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(Icons.arrow_back),
+                        color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 60,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    !loaded
-                        ? CircularProgressIndicator()
-                        : InkWell(
-                            onTap: () =>
-                                {_betterPlayerController.toggleFullScreen()},
-                            child: SizedBox(
-                              height: 200,
-                              child: AspectRatio(
-                                aspectRatio: 16 / 9,
-                                child: BetterPlayer(
-                                  controller: _betterPlayerController,
-                                ),
-                              ),
-                            ),
-                          ),
+                    Padding(
+                      padding: EdgeInsets.all(5),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(25.0),
+                        child: FadeInImage.assetNetwork(
+                            placeholder: 'assets/icons/loadingicon.png',
+                            image: MyNetwork.currentChanel.icon),
+                      ),
+                    ),
+                    Flexible(
+                      child: Text(
+                        MyNetwork.currentChanel.name,
+                        style: TextStyle(color: MyColors.black, fontSize: 18),
+                        overflow: TextOverflow.fade,
+                        maxLines: 1,
+                        softWrap: false,
+                      ),
+                    ),
+                    Expanded(child: SizedBox()),
+                    IconButton(
+                        onPressed: () =>
+                            {_betterPlayerController.toggleFullScreen()},
+                        icon: Icon(Icons.fullscreen)),
+                    IconButton(
+                      icon: MyNetwork.currentChanel.isFavorite
+                          ? Icon(Icons.favorite)
+                          : Icon(Icons.favorite_border_outlined),
+                      onPressed: isFavPressed
+                          ? null
+                          : () => {
+                                addFav(id: MyNetwork.currentChanel.id),
+                              },
+                    ),
                   ],
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 60,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(5),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(25.0),
-                          child: FadeInImage.assetNetwork(
-                              placeholder: 'assets/icons/loadingicon.png',
-                              image: MyNetwork.currentChanel.icon),
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          MyNetwork.currentChanel.name,
-                          style: TextStyle(color: MyColors.black, fontSize: 18),
-                          overflow: TextOverflow.fade,
-                          maxLines: 1,
-                          softWrap: false,
-                        ),
-                      ),
-                      Expanded(child: SizedBox()),
-                      IconButton(
-                          onPressed: () => {
-                                loaded
-                                    ? _betterPlayerController.toggleFullScreen()
-                                    : null
-                              },
-                          icon: Icon(Icons.fullscreen)),
-                      IconButton(
-                        icon: MyNetwork.currentChanel.isFavorite
-                            ? Icon(Icons.favorite)
-                            : Icon(Icons.favorite_border_outlined),
-                        onPressed: isFavPressed
-                            ? null
-                            : () => {
-                                  addFav(id: MyNetwork.currentChanel.id),
-                                },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () => {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Card(
-                        color: index.isOdd ? Colors.white : Colors.grey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              leading:
-                                  Text(MyNetwork.currectEPG[index].startdt),
-                              title: Text(MyNetwork.currectEPG[index].title),
-                              subtitle: Text(
-                                MyNetwork.currectEPG[index].description,
-                                overflow: TextOverflow.fade,
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Text(MyNetwork.currectEPG[index].enddt),
-                                const SizedBox(width: 8),
+            Expanded(
+              child: ScrollablePositionedList.builder(
+                initialScrollIndex: _scrollToIndex(),
+                itemCount: MyNetwork.currectEPG.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                      color: currentActiveEPG == index ? Colors.cyan : null,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                            leading: Column(
+                              children: [
+                                Text(MyNetwork.currectEPG[index].startdt),
+                                Text(DateFormat('dd/MM').format(
+                                    MyNetwork.currectEPG[index].startDate)),
                               ],
                             ),
-                          ],
-                        ),
+                            title: Text(MyNetwork.currectEPG[index].title),
+                            subtitle: Text(
+                              MyNetwork.currectEPG[index].description,
+                              overflow: TextOverflow.fade,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Text(MyNetwork.currectEPG[index].enddt),
+                              const SizedBox(width: 8),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   );
                 },
-                childCount: MyNetwork.currectEPG.length,
               ),
             ),
           ],

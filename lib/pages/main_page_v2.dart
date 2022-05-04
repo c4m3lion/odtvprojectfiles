@@ -116,56 +116,28 @@ class _MainPagev2State extends State<MainPagev2> {
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: [
-              InkWell(
-                onTap: () async => {
-                  MyNetwork.catId = "",
-                  MyNetwork.categroyName = "",
-                  Navigator.pushNamed(context, '/category'),
-                  setState(() {}),
-                },
-                child: SizedBox(
-                  height: 70,
-                  child: Card(
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text('Channels').tr(),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () async => {
-                  Navigator.pushNamed(context, '/favorite'),
-                },
-                child: SizedBox(
-                  height: 70,
-                  child: Card(
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text('Favorites').tr()
-                      ],
-                    ),
-                  ),
-                ),
-              ),
               ListView.builder(
                 physics: ClampingScrollPhysics(),
                 itemCount: MyNetwork.categorys.length,
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 itemBuilder: (context, index) => InkWell(
-                  onTap: () async => {
-                    MyNetwork.catId = MyNetwork.categorys[index].id,
-                    MyNetwork.categroyName = MyNetwork.categorys[index].name,
-                    Navigator.pushNamed(context, '/category'),
-                    setState(() {}),
+                  onTap: () async {
+                    if (MyNetwork.categorys[index].name == 'Favorites') {
+                      Navigator.pushNamed(context, '/favorite');
+                      return;
+                    }
+                    if (MyNetwork.categorys[index].name == 'Channels') {
+                      MyNetwork.catId = "";
+                      MyNetwork.categroyName = "";
+                      Navigator.pushNamed(context, '/category');
+                      setState(() {});
+                      return;
+                    }
+                    MyNetwork.catId = MyNetwork.categorys[index].id;
+                    MyNetwork.categroyName = MyNetwork.categorys[index].name;
+                    Navigator.pushNamed(context, '/category');
+                    setState(() {});
                   },
                   child: SizedBox(
                     height: 70,

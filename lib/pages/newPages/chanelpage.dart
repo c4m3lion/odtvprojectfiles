@@ -14,7 +14,11 @@ class ChannelsPage extends StatefulWidget {
 class _ChannelsPageState extends State<ChannelsPage> {
   String searchQuery = "Search query";
   void updateSearchQuery(String newQuery) {
-    if (MyNetwork.categorys[MyLocalData.selectedChannelPage].id == "channel") {
+    if (MyLocalData.selectedChannelPage == -1) {
+      MyLocalData.selectedChannelPage = 0;
+      MyNetwork.currentChannels = MyNetwork.channels;
+    } else if (MyNetwork.categorys[MyLocalData.selectedChannelPage].id ==
+        "channel") {
       MyNetwork.currentChannels = MyNetwork.channels;
     } else if (MyNetwork.categorys[MyLocalData.selectedChannelPage].id ==
         "favorites") {
@@ -93,8 +97,9 @@ class _ChannelsPageState extends State<ChannelsPage> {
                           MyNetwork.currentChannels[index];
                       FlutterSecureStorage storage = FlutterSecureStorage();
                       await storage.write(
-                          key: "currentChannel", value: index.toString());
-                      Navigator.pushNamed(context, '/video');
+                          key: "currentChannel",
+                          value: MyNetwork.currentChannels[index].name);
+                      Navigator.pushNamed(context, '/home');
                     },
                     leading: CircleAvatar(
                       backgroundImage: CachedNetworkImageProvider(

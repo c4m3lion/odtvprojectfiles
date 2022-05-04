@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   bool loading = false;
   bool isOverLay = false;
   bool isInfoOverLay = false;
+  bool isFavPressed = false;
 
   void changeVideo(int value) {
     _betterPlayerController.dispose();
@@ -26,15 +27,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   void changeToVideo() {
-    _betterPlayerController.dispose();
-    onInitVideo();
+    if (_betterPlayerController == null) {
+      onInitVideo();
+    } else {
+      _betterPlayerController.dispose();
+      onInitVideo();
+    }
   }
 
-  void onInitVideo() async {
+  void loadOtherStuff() async {
+    await MyNetwork().getFavorites();
+    await MyNetwork().getEPG();
+  }
+
+  void onInitVideo() {
+    loadOtherStuff();
     loading = true;
     toggleInfo();
-    MyNetwork.currentChanel.playBackUrl = await MyNetwork().getPlayBack();
-    await MyNetwork().getEPG();
+
     BetterPlayerDataSource betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       MyNetwork.currentChanel.playBackUrl,
@@ -76,12 +86,42 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  String getCurrentEPG() {
+    for (int i = 0; i < MyNetwork.currectEPG.length; i++) {
+      bool temp = DateTime.now().isAfter(MyNetwork.currectEPG[i].startDate) &&
+          DateTime.now().isBefore(MyNetwork.currectEPG[i].endDate);
+
+      if (temp) {
+        return MyNetwork.currectEPG[i].title;
+      }
+    }
+    return "";
+  }
+
   void toggleInfo({value = true}) async {
     isInfoOverLay = value;
     setState(() {});
     if (!value) return;
     await Future.delayed(Duration(seconds: 6));
     isInfoOverLay = false;
+    setState(() {});
+  }
+
+  void addFav({required String id}) async {
+    isFavPressed = true;
+    setState(() {});
+    if (!MyNetwork.currentChanel.isFavorite) {
+      String k = await MyNetwork().addFavorite(channel_id: id);
+      if (k == "OK") {
+        MyNetwork.currentChanel.isFavorite = true;
+      }
+    } else {
+      String k = await MyNetwork().removeFavorite(channel_id: id);
+      if (k == "OK") {
+        MyNetwork.currentChanel.isFavorite = false;
+      }
+    }
+    isFavPressed = false;
     setState(() {});
   }
 
@@ -92,22 +132,30 @@ class _HomePageState extends State<HomePage> {
       if (isOverLay) return KeyEventResult.ignored;
       print(event.logicalKey.debugName);
       print(event.data.keyLabel);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(event.logicalKey.debugName.toString())),
-      );
+      print(isOverLay);
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text(event.logicalKey.debugName.toString())),
+      // );
+      if (event.isKeyPressed(LogicalKeyboardKey.goBack) && !isOverLay) {
+        Navigator.pushReplacementNamed(context, '/mainhome');
+      }
       if (event.isKeyPressed(LogicalKeyboardKey.enter) ||
           event.isKeyPressed(LogicalKeyboardKey.select) ||
           (event.logicalKey.keyLabel == "Select" &&
               event.runtimeType.toString() == 'RawKeyDownEvent')) {
-        showOverlay();
+        if (!isInfoOverLay) {
+          showOverlay();
+        } else {
+          addFav(id: MyNetwork.currentChanel.id);
+        }
       }
       if (event.isKeyPressed(LogicalKeyboardKey.arrowDown) ||
           event.isKeyPressed(LogicalKeyboardKey.channelDown)) {
-        changeVideo(1);
+        changeVideo(-1);
       }
       if (event.isKeyPressed(LogicalKeyboardKey.arrowUp) ||
           event.isKeyPressed(LogicalKeyboardKey.channelUp)) {
-        changeVideo(-1);
+        changeVideo(1);
       }
       if (event.isKeyPressed(LogicalKeyboardKey.space) ||
           event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
@@ -130,6 +178,7 @@ class _HomePageState extends State<HomePage> {
     return WillPopScope(
       onWillPop: () async {
         print('The user tries to pop()');
+        if (!isOverLay) {}
         showOverlay();
         return false;
       },
@@ -169,15 +218,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget InfoOverLay(BuildContext context) {
-    return SizedBox(
-      width: 200,
+    return Container(
       child: Card(
         child: ListTile(
           leading: FadeInImage.assetNetwork(
             placeholder: "assets/images/page.png",
             image: MyNetwork.currentChanel.icon,
+            imageErrorBuilder: (context, error, stackTrace) {
+              return Image.asset('assets/images/page.png',
+                  fit: BoxFit.fitWidth);
+            },
           ),
           title: Text(MyNetwork.currentChanel.name),
+          subtitle: Text(getCurrentEPG()),
+          trailing: MyNetwork.currentChanel.isFavorite
+              ? Icon(Icons.favorite)
+              : Icon(Icons.favorite_border_outlined),
         ),
       ),
     );

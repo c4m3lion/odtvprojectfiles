@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:odtvprojectfiles/main_old.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
+import 'package:odtvprojectfiles/pages/newPages/newMenu.dart';
+import 'package:odtvprojectfiles/screens/device_selection_page.dart';
 import 'package:odtvprojectfiles/screens/home_page.dart';
 import 'package:odtvprojectfiles/screens/login_page.dart';
 import 'package:odtvprojectfiles/translations/codegen_loader.g.dart';
@@ -106,7 +108,8 @@ class MyApp extends StatelessWidget {
         initialRoute: '/login',
         routes: {
           '/login': (context) => LoginPage(),
-          '/home': (context) => HomePage()
+          '/home': (context) => HomePage(),
+          '/mainhome': (context) => NewMainPage(),
         },
       ),
     );

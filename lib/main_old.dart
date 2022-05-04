@@ -13,6 +13,7 @@ import 'package:odtvprojectfiles/pages/favoritelist_page.dart';
 import 'package:odtvprojectfiles/pages/languages_page.dart';
 import 'package:odtvprojectfiles/pages/loading_page.dart';
 import 'package:odtvprojectfiles/pages/login_page.dart';
+import 'package:odtvprojectfiles/pages/main_page_v2.dart';
 import 'package:odtvprojectfiles/pages/newPages/newMenu.dart';
 import 'package:odtvprojectfiles/pages/newPages/newVideo.dart';
 import 'package:odtvprojectfiles/pages/searchpage.dart';
@@ -21,6 +22,8 @@ import 'package:odtvprojectfiles/pages/video_page.dart';
 import 'package:odtvprojectfiles/pages/videoplayer_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:odtvprojectfiles/screens/device_selection_page.dart';
+import 'package:odtvprojectfiles/screens/home_page.dart';
 import 'package:odtvprojectfiles/translations/codegen_loader.g.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -67,35 +70,6 @@ class MyAppAndroid extends StatelessWidget {
         supportedLocales: context.supportedLocales,
         locale: context.locale,
         theme: ThemeData(
-          pageTransitionsTheme: PageTransitionsTheme(builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
-          }),
-          focusColor: Colors.cyan.withOpacity(0.5),
-          splashColor: Colors.cyan,
-          hoverColor: Colors.cyan.withOpacity(0.8),
-          dialogTheme: DialogTheme(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              //set border radius more than 50% of height and width to make circle
-            ),
-          ),
-          primaryColor: Colors.orange,
-          primarySwatch: Colors.cyan,
-          brightness: Brightness.dark,
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(),
-          ),
-          cardTheme: CardTheme(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              //set border radius more than 50% of height and width to make circle
-            ),
-          ),
-          listTileTheme: ListTileThemeData(
-              //selectedTileColor: Colors.cyan.withOpacity(0.8),
-              ),
-          splashFactory: InkRipple.splashFactory,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           scaffoldBackgroundColor: MyColors.white,
           backgroundColor: MyColors.white,
@@ -111,13 +85,13 @@ class MyAppAndroid extends StatelessWidget {
                 ),
           ),
         ),
-        initialRoute: '/login',
+        initialRoute: '/device',
         routes: {
           '/login': (context) => LoginPage(),
           '/loading': (context) => LoadingPage(),
-          '/main': (context) => MainPage(),
+          '/main': (context) => MainPagev2(),
           '/oldvideo': (context) => VideoPage(),
-          '/video': (context) => NewVideoPage(),
+          '/video': (context) => BetterVideoPage(),
           '/video2': (context) => VideoPlayerPage(),
           '/button': (context) => ButtonDetector(),
           '/channels': (context) => ChannelListPage(),
@@ -126,6 +100,7 @@ class MyAppAndroid extends StatelessWidget {
           '/settings': (context) => SettingPage(),
           '/category': (context) => CategoryPage(),
           '/language': (context) => LanguagesPage(),
+          '/device': (context) => DeviceSelectionPage(),
         },
       ),
     );

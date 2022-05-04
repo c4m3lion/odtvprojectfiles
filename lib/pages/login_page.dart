@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loading_gifs/loading_gifs.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock/wakelock.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,10 +23,8 @@ class _LoginPageState extends State<LoginPage> {
   String? _validateUser = null;
   String? _validatePass = null;
   bool process = false;
-  String statusLogin = "";
 
   ///Functions///////////////////////////////
-
   void checkInput({bool canGo = false}) {
     if (process) {
       return;
@@ -65,10 +62,10 @@ class _LoginPageState extends State<LoginPage> {
       await storage.write(key: "isSave", value: isSave.toString());
     }
     MyPrint.printWarning("login started");
-    String _res = "OK";
+    String _res = await MyNetwork().login(login: user, pass: pass);
     if (_res == "OK") {
       MyPrint.printWarning(MyNetwork.token);
-      validateInput(context);
+      Navigator.pushReplacementNamed(context, "/loading");
     } else {
       MyPrint.printError(_res);
       if (_res == "not enough data") {
@@ -119,38 +116,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void validateInput(BuildContext context) async {
-    setState(() {
-      statusLogin = "Looking for user...";
-      process = true;
-    });
-    String res =
-        await MyNetwork().login(login: userText.text, pass: passText.text);
-    if (res != "OK") {
-      MyPrint.dialog(context, "Wrong credentials!",
-          "Please enter right user informations!");
-      setState(() {
-        process = false;
-      });
-      return;
-    }
-    setState(() {
-      statusLogin = "Getting Channels...";
-    });
-    res = await MyNetwork().getChannels();
-    String crt = await storage.read(key: "currentChannel") ?? "0";
-    MyNetwork.currentChanel = MyNetwork.channels[int.parse(crt)];
-    if (res == "OK") {
-      Navigator.pushReplacementNamed(context, '/video');
-    } else {
-      MyPrint.dialog(context, "Wrong credentials!",
-          "Please enter right user informations!");
-      setState(() {
-        process = false;
-      });
-    }
-  }
-
   /////////////////
   @override
   void dispose() {
@@ -168,131 +133,181 @@ class _LoginPageState extends State<LoginPage> {
     Wakelock.disable();
   }
 
+  void _launchUrl(String _url) async {
+    if (!await launchUrl(Uri.parse(_url))) throw 'Could not launch $_url';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: Column(
+    return Scaffold(
+      body: SafeArea(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(
+            Expanded(
               child: SizedBox(
-                width: 400,
-                child: Card(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          "Login",
-                          style: TextStyle(fontSize: 30),
-                        ),
+                height: double.infinity,
+              ),
+            ),
+            SizedBox(
+              width: 300,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Card(
+                        child: TextButton(
+                            onPressed: () =>
+                                {Navigator.pushNamed(context, "/language")},
+                            child: Text(context.locale.languageCode)),
                       ),
-                      const SizedBox(
-                        height: 40,
-                        child: Divider(),
+                    ),
+                    !process
+                        ? Image.asset(
+                            "assets/icons/app_logo-removebg-preview.png",
+                            scale: 1.3,
+                          )
+                        : CircularProgressIndicator(),
+                    SizedBox(
+                      height: 80,
+                    ),
+                    TextField(
+                      //autofocus: true,
+                      enabled: !process,
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: "Account".tr(),
+                        //labelText: "User",
+                        errorText: _validateUser,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 60),
-                        child: TextFormField(
-                            enabled: !process,
-                            decoration: const InputDecoration(
-                              labelText: 'User',
-                            ),
-                            validator: (text) {
-                              if (text == null || text.isEmpty) {
-                                return 'Provide an user';
-                              }
-                              return null;
-                            },
-                            controller: userText,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            keyboardType: TextInputType.number,
-                            onEditingComplete: () =>
-                                FocusScope.of(context).nextFocus()),
+                      controller: userText,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (value) {
+                        checkInput();
+                      },
+                      textInputAction: TextInputAction.next,
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    TextField(
+                      enabled: !process,
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: "Password".tr(),
+                        //labelText: "User",
+                        errorText: _validatePass,
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 60),
-                        child: TextFormField(
-                          enabled: !process,
-                          decoration: const InputDecoration(
-                            labelText: 'Password',
-                          ),
-                          validator: (text) {
-                            if (text == null || text.isEmpty) {
-                              return 'Provide an user';
-                            }
-                            return null;
+                      controller: passText,
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (value) {
+                        checkInput(canGo: false);
+                      },
+                      textInputAction: TextInputAction.next,
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: isSave,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              isSave = value!;
+                            });
                           },
-                          controller: passText,
-                          obscureText: true,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Checkbox(
-                            value: isSave,
-                            fillColor:
-                                MaterialStateProperty.all(MyColors.yellow),
-                            onChanged: (bool? value) {
-                              setState(() {
-                                isSave = value!;
-                              });
-                            },
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              text: "Remeber",
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  setState(() {
-                                    isSave = !isSave;
-                                  });
-                                },
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
+                        RichText(
+                          text: TextSpan(
+                            text: "Remember".tr(),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                setState(() {
+                                  isSave = !isSave;
+                                });
+                              },
+                            style: const TextStyle(
+                              color: Colors.black,
                             ),
                           ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 100,
-                        child: Center(
-                          child: process
-                              ? Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const LinearProgressIndicator(),
-                                    Text(statusLogin)
-                                  ],
-                                )
-                              : ElevatedButton(
-                                  onPressed: () {
-                                    process ? null : checkInput(canGo: true);
-                                  },
-                                  child: const Text("Continue"),
-                                ),
                         ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      width: 250,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed:
+                            process ? null : () => {checkInput(canGo: true)},
+                        child: Text("Sign in").tr(),
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Text(
+                      "Missing a subscription?".tr() + "Contact us".tr() + "!",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            _launchUrl(
+                                "https://www.facebook.com/Smartsystemstechnology");
+                          },
+                          child: Container(
+                            child: Icon(
+                              Icons.facebook,
+                              size: 40,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _launchUrl("012952");
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.call,
+                                size: 40,
+                              ),
+                              Text(
+                                "012952",
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
               ),
             ),
+            Expanded(
+                child: SizedBox(
+              height: double.infinity,
+            )),
           ],
         ),
       ),
