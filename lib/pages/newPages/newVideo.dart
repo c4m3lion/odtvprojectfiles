@@ -186,9 +186,9 @@ class OverLayVideo extends StatefulWidget {
 class _OverLayVideoState extends State<OverLayVideo> {
   String searchQuery = "Search query";
   void updateSearchQuery(String newQuery) {
-    if (MyNetwork.categorys[MyLocalData.selectedChannelPage].id == "channel") {
+    if (MyNetwork.categorys[MyLocalData.selectedCurrentTag].id == "channel") {
       MyNetwork.currentChannels = MyNetwork.channels;
-    } else if (MyNetwork.categorys[MyLocalData.selectedChannelPage].id ==
+    } else if (MyNetwork.categorys[MyLocalData.selectedCurrentTag].id ==
         "favorites") {
       MyNetwork.currentChannels = MyNetwork.favorites;
     } else {
@@ -197,7 +197,7 @@ class _OverLayVideoState extends State<OverLayVideo> {
           .toList();
     }
     MyPrint.printWarning(
-        MyNetwork.categorys[MyLocalData.selectedChannelPage].name);
+        MyNetwork.categorys[MyLocalData.selectedCurrentTag].name);
     setState(() {
       searchQuery = newQuery;
     });
@@ -220,18 +220,18 @@ class _OverLayVideoState extends State<OverLayVideo> {
                 controller: ScrollController(),
                 itemBuilder: (context, index) {
                   return Material(
-                    color: index == MyLocalData.selectedChannelPage
+                    color: index == MyLocalData.selectedCurrentTag
                         ? Colors.cyan.withOpacity(0.4)
                         : Colors.transparent,
                     child: ListTile(
                       contentPadding: EdgeInsets.all(10),
                       onTap: () => {
                         setState(() {
-                          MyLocalData.selectedChannelPage = index;
+                          MyLocalData.selectedCurrentTag = index;
                           updateSearchQuery(MyNetwork.categorys[index].id);
                         }),
                       },
-                      selected: index == MyLocalData.selectedChannelPage,
+                      selected: index == MyLocalData.selectedCurrentTag,
                       title: Text(MyNetwork.categorys[index].name),
                     ),
                   );

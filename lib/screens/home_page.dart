@@ -1,6 +1,7 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 import 'package:odtvprojectfiles/screens/overlay_page.dart';
 
@@ -18,7 +19,44 @@ class _HomePageState extends State<HomePage> {
   bool loading = false;
   bool isOverLay = false;
   bool isInfoOverLay = false;
+  bool isNumberOverlay = false;
   bool isFavPressed = false;
+
+  int timer = 0;
+  int numberPressed = 0;
+
+  void changeChanneltoNumber(int id) {
+    timer += 1;
+    numberPressed = numberPressed * 10 + id;
+    if (timer >= 4 || numberPressed > MyNetwork.channels.length) {
+      timer = 0;
+      numberPressed = 0;
+      isNumberOverlay = false;
+      setState(() {});
+      return;
+    }
+    if (numberPressed == 0) {
+      numberPressed = 1;
+    }
+    loadChannelByNumber(numberPressed - 1);
+    isNumberOverlay = true;
+    setState(() {});
+  }
+
+  void loadChannelByNumber(int id) async {
+    var temp = timer;
+    await Future.delayed(Duration(seconds: 3));
+    if (timer == temp) {
+      MyLocalData.selectedCurrentTag = 1;
+      MyNetwork.currentChanel = MyNetwork.channels[id];
+
+      timer = 0;
+      numberPressed = 0;
+      isNumberOverlay = false;
+      setState(() {});
+      changeToVideo();
+    }
+  }
 
   void changeVideo(int value) {
     _betterPlayerController.dispose();
@@ -125,6 +163,13 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -161,6 +206,11 @@ class _HomePageState extends State<HomePage> {
           event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
         toggleInfo(value: !isInfoOverLay);
         setState(() {});
+      }
+      if (isNumeric(event.logicalKey.keyLabel) &&
+          event.runtimeType.toString() == 'RawKeyDownEvent') {
+        MyPrint.printWarning(event.logicalKey.keyLabel);
+        changeChanneltoNumber(int.parse(event.logicalKey.keyLabel));
       }
       return KeyEventResult.handled;
     });
@@ -210,6 +260,7 @@ class _HomePageState extends State<HomePage> {
                     ),
             ),
             isInfoOverLay ? InfoOverLay(context) : SizedBox(),
+            isNumberOverlay ? NumberOverLay(context) : SizedBox(),
             isOverLay ? OverlayPage(changeToVideo) : SizedBox(),
           ],
         ),
@@ -236,6 +287,19 @@ class _HomePageState extends State<HomePage> {
               : Icon(Icons.favorite_border_outlined),
         ),
       ),
+    );
+  }
+
+  Widget NumberOverLay(BuildContext context) {
+    return Container(
+      child: Card(
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          numberPressed.toString(),
+          style: TextStyle(fontSize: 35),
+        ),
+      )),
     );
   }
 }

@@ -294,9 +294,20 @@ class MyNetwork {
     int _k = MyLocalData.selectedCurrentChannel + value;
     if (_k >= MyNetwork.currentChannels.length) {
       _k = 0;
+      MyLocalData.selectedCurrentTag += 1;
+      if (MyLocalData.selectedCurrentTag >= MyNetwork.categorys.length) {
+        MyLocalData.selectedCurrentTag = 0;
+      }
+
+      updateSearchQuery(MyNetwork.categorys[MyLocalData.selectedCurrentTag].id);
     }
     if (_k < 0) {
       _k = MyNetwork.currentChannels.length - 1;
+      MyLocalData.selectedCurrentTag -= 1;
+      if (MyLocalData.selectedCurrentTag < 0) {
+        MyLocalData.selectedCurrentTag = MyNetwork.categorys.length - 1;
+      }
+      updateSearchQuery(MyNetwork.categorys[MyLocalData.selectedCurrentTag].id);
     }
     MyNetwork.currentChanel = MyNetwork.currentChannels[_k];
     MyLocalData.selectedCurrentChannel = _k;
@@ -312,6 +323,22 @@ class MyNetwork {
       },
     );
   }
+}
+
+void updateSearchQuery(String newQuery) async {
+  if (MyNetwork.categorys[MyLocalData.selectedCurrentTag].id == "channel") {
+    MyNetwork.currentChannels = MyNetwork.channels;
+  } else if (MyNetwork.categorys[MyLocalData.selectedCurrentTag].id ==
+      "favorites") {
+    MyNetwork().getFavorites();
+    MyNetwork.currentChannels = MyNetwork.favorites;
+  } else {
+    MyNetwork.currentChannels = MyNetwork.channels
+        .where(((element) => element.category.contains(newQuery)))
+        .toList();
+  }
+  MyPrint.printWarning(
+      MyNetwork.categorys[MyLocalData.selectedCurrentTag].name);
 }
 
 class Channel {
@@ -400,8 +427,8 @@ class UserInfos {
 }
 
 class MyLocalData {
-  static int selectedChannelPage = -1;
   static int selectedCurrentChannel = -1;
+  static int selectedCurrentTag = 0;
 
   static bool isCahnnalPart = false;
 }

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
@@ -29,7 +30,7 @@ class _SettingPageState extends State<SettingPage> {
                   Icons.verified_user,
                   size: 30,
                 ),
-                title: const Text('User'),
+                title: const Text('User').tr(),
                 subtitle: Text(MyNetwork.userInfo),
                 isThreeLine: true,
               ),
@@ -42,7 +43,7 @@ class _SettingPageState extends State<SettingPage> {
                   Icons.app_registration,
                   size: 30,
                 ),
-                title: const Text('Version'),
+                title: const Text('Version').tr(),
                 subtitle: const Text('v0.0.1'),
                 isThreeLine: true,
               ),
@@ -50,12 +51,15 @@ class _SettingPageState extends State<SettingPage> {
             Material(
               color: Colors.transparent,
               child: ListTile(
-                onTap: () => {},
+                onTap: () async {
+                  await Navigator.pushNamed(context, '/language');
+                  setState(() {});
+                },
                 leading: const Icon(
                   Icons.language,
                   size: 30,
                 ),
-                title: const Text('Languages'),
+                title: const Text('Language').tr(),
                 subtitle: const Text('Change app language'),
                 isThreeLine: true,
               ),
@@ -72,7 +76,7 @@ class _SettingPageState extends State<SettingPage> {
                   Icons.logout,
                   size: 30,
                 ),
-                title: const Text('Log out'),
+                title: const Text('Log out').tr(),
                 subtitle: const Text(""),
                 isThreeLine: true,
               ),

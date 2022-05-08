@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -32,9 +33,9 @@ class _OvelLayPageState extends State<OverlayPage>
 
   String searchQuery = "Search query";
   void updateSearchQuery(String newQuery) async {
-    if (MyNetwork.categorys[MyLocalData.selectedChannelPage].id == "channel") {
+    if (MyNetwork.categorys[MyLocalData.selectedCurrentTag].id == "channel") {
       MyNetwork.currentChannels = MyNetwork.channels;
-    } else if (MyNetwork.categorys[MyLocalData.selectedChannelPage].id ==
+    } else if (MyNetwork.categorys[MyLocalData.selectedCurrentTag].id ==
         "favorites") {
       MyNetwork().getFavorites();
       MyNetwork.currentChannels = MyNetwork.favorites;
@@ -44,7 +45,7 @@ class _OvelLayPageState extends State<OverlayPage>
           .toList();
     }
     MyPrint.printWarning(
-        MyNetwork.categorys[MyLocalData.selectedChannelPage].name);
+        MyNetwork.categorys[MyLocalData.selectedCurrentTag].name);
 
     currentActiveChannel = _scrollToChannelIndex();
 
@@ -117,7 +118,7 @@ class _OvelLayPageState extends State<OverlayPage>
       duration: const Duration(milliseconds: 180),
     );
     MyLocalData.isCahnnalPart = false;
-    MyLocalData.selectedChannelPage = -1;
+    MyLocalData.selectedCurrentTag = -1;
     setState(() {});
     super.initState();
   }
@@ -150,6 +151,8 @@ class _OvelLayPageState extends State<OverlayPage>
           setState(() {});
           FocusScope.of(context).requestFocus(focusNodeChannel);
         }
+        if (key.isKeyPressed(LogicalKeyboardKey.arrowDown) &&
+            MyLocalData.isCahnnalPart) {}
         if (key.isKeyPressed(LogicalKeyboardKey.arrowRight) &&
             !MyLocalData.isCahnnalPart) {
           setState(() {});
@@ -182,26 +185,40 @@ class _OvelLayPageState extends State<OverlayPage>
                         controller: ScrollController(),
                         itemBuilder: (context, index) {
                           return Material(
-                            color: index == MyLocalData.selectedChannelPage
+                            color: index == MyLocalData.selectedCurrentTag
                                 ? Colors.cyan.withOpacity(0.4)
                                 : Colors.transparent,
-                            child: ListTile(
-                              focusNode: index == 0 ? focusNodeCat : null,
-                              contentPadding: EdgeInsets.all(10),
-                              onTap: !MyLocalData.isCahnnalPart
-                                  ? null
-                                  : () => {
-                                        setState(() {
-                                          MyLocalData.selectedChannelPage =
-                                              index;
-                                          MyLocalData.isCahnnalPart = true;
-                                          updateSearchQuery(
-                                              MyNetwork.categorys[index].id);
-                                        }),
-                                      },
-                              selected:
-                                  index == MyLocalData.selectedChannelPage,
-                              title: Text(MyNetwork.categorys[index].name),
+                            child: Focus(
+                              onFocusChange: (value) => {
+                                if (value)
+                                  {
+                                    setState(() {
+                                      MyLocalData.selectedCurrentTag = index;
+                                      MyLocalData.isCahnnalPart = true;
+                                      updateSearchQuery(
+                                          MyNetwork.categorys[index].id);
+                                    }),
+                                  }
+                              },
+                              child: ListTile(
+                                focusNode: index == 0 ? focusNodeCat : null,
+                                contentPadding: EdgeInsets.all(10),
+                                onTap: !MyLocalData.isCahnnalPart
+                                    ? null
+                                    : () => {
+                                          setState(() {
+                                            MyLocalData.selectedCurrentTag =
+                                                index;
+                                            MyLocalData.isCahnnalPart = true;
+                                            updateSearchQuery(
+                                                MyNetwork.categorys[index].id);
+                                          }),
+                                        },
+                                selected:
+                                    index == MyLocalData.selectedCurrentTag,
+                                title:
+                                    Text(MyNetwork.categorys[index].name).tr(),
+                              ),
                             ),
                           );
                         },
@@ -237,6 +254,7 @@ class _OvelLayPageState extends State<OverlayPage>
                       onTap: () async {
                         MyNetwork.currentChanel =
                             MyNetwork.currentChannels[index];
+                        MyLocalData.selectedCurrentChannel = index;
                         FlutterSecureStorage storage = FlutterSecureStorage();
                         await storage.write(
                             key: "currentChannel",

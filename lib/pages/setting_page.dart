@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 
-class SettingPage extends StatelessWidget {
+class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
 
+  @override
+  State<SettingPage> createState() => _SettingPageState();
+}
+
+class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -56,8 +61,9 @@ class SettingPage extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, '/language');
+              onTap: () async {
+                await Navigator.pushNamed(context, '/language');
+                setState(() {});
               },
               child: Card(
                 child: Column(

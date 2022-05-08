@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
@@ -14,13 +15,13 @@ class ChannelsPage extends StatefulWidget {
 class _ChannelsPageState extends State<ChannelsPage> {
   String searchQuery = "Search query";
   void updateSearchQuery(String newQuery) {
-    if (MyLocalData.selectedChannelPage == -1) {
-      MyLocalData.selectedChannelPage = 0;
+    if (MyLocalData.selectedCurrentTag == -1) {
+      MyLocalData.selectedCurrentTag = 0;
       MyNetwork.currentChannels = MyNetwork.channels;
-    } else if (MyNetwork.categorys[MyLocalData.selectedChannelPage].id ==
+    } else if (MyNetwork.categorys[MyLocalData.selectedCurrentTag].id ==
         "channel") {
       MyNetwork.currentChannels = MyNetwork.channels;
-    } else if (MyNetwork.categorys[MyLocalData.selectedChannelPage].id ==
+    } else if (MyNetwork.categorys[MyLocalData.selectedCurrentTag].id ==
         "favorites") {
       MyNetwork.currentChannels = MyNetwork.favorites;
     } else {
@@ -29,7 +30,7 @@ class _ChannelsPageState extends State<ChannelsPage> {
           .toList();
     }
     MyPrint.printWarning(
-        MyNetwork.categorys[MyLocalData.selectedChannelPage].name);
+        MyNetwork.categorys[MyLocalData.selectedCurrentTag].name);
     setState(() {
       searchQuery = newQuery;
     });
@@ -58,19 +59,19 @@ class _ChannelsPageState extends State<ChannelsPage> {
               controller: ScrollController(),
               itemBuilder: (context, index) {
                 return Material(
-                  color: index == MyLocalData.selectedChannelPage
+                  color: index == MyLocalData.selectedCurrentTag
                       ? Colors.cyan.withOpacity(0.4)
                       : Colors.transparent,
                   child: ListTile(
                     contentPadding: EdgeInsets.all(10),
                     onTap: () => {
                       setState(() {
-                        MyLocalData.selectedChannelPage = index;
+                        MyLocalData.selectedCurrentTag = index;
                         updateSearchQuery(MyNetwork.categorys[index].id);
                       }),
                     },
-                    selected: index == MyLocalData.selectedChannelPage,
-                    title: Text(MyNetwork.categorys[index].name),
+                    selected: index == MyLocalData.selectedCurrentTag,
+                    title: Text(MyNetwork.categorys[index].name).tr(),
                   ),
                 );
               },
