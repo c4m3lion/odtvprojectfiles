@@ -1,10 +1,11 @@
-// ignore_for_file: prefer_const_constructors
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:loading_gifs/loading_gifs.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock/wakelock.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,7 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   bool process = false;
 
   ///Functions///////////////////////////////
-
   void checkInput({bool canGo = false}) {
     if (process) {
       return;
@@ -133,6 +133,10 @@ class _LoginPageState extends State<LoginPage> {
     Wakelock.disable();
   }
 
+  void _launchUrl(String _url) async {
+    if (!await launchUrl(Uri.parse(_url))) throw 'Could not launch $_url';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,30 +154,33 @@ class _LoginPageState extends State<LoginPage> {
               width: 300,
               child: SingleChildScrollView(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: Text(
-                        "Login",
-                        style: TextStyle(
-                          color: MyColors.white,
-                          fontSize: 36,
-                        ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Card(
+                        child: TextButton(
+                            onPressed: () =>
+                                {Navigator.pushNamed(context, "/language")},
+                            child: Text(context.locale.languageCode)),
                       ),
+                    ),
+                    !process
+                        ? Image.asset(
+                            "assets/icons/app_logo-removebg-preview.png",
+                            scale: 1.3,
+                          )
+                        : CircularProgressIndicator(),
+                    SizedBox(
+                      height: 80,
                     ),
                     TextField(
                       //autofocus: true,
                       enabled: !process,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(color: MyColors.orange)),
                         filled: true,
-                        fillColor: MyColors.yellow,
-                        focusColor: MyColors.cyan,
-                        hintText: "Enter login",
+                        hintText: "Account".tr(),
                         //labelText: "User",
                         errorText: _validateUser,
                       ),
@@ -190,27 +197,23 @@ class _LoginPageState extends State<LoginPage> {
                       height: 6,
                     ),
                     TextField(
-                        enabled: !process,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(color: MyColors.orange)),
-                          filled: true,
-                          fillColor: MyColors.yellow,
-                          focusColor: MyColors.cyan,
-                          hintText: "Enter password",
-                          //labelText: "User",
-                          errorText: _validatePass,
-                        ),
-                        controller: passText,
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        keyboardType: TextInputType.number,
-                        onSubmitted: (value) {
-                          checkInput(canGo: false);
-                        },
-                        textInputAction: TextInputAction.next),
+                      enabled: !process,
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: "Password".tr(),
+                        //labelText: "User",
+                        errorText: _validatePass,
+                      ),
+                      controller: passText,
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (value) {
+                        checkInput(canGo: false);
+                      },
+                      textInputAction: TextInputAction.next,
+                    ),
                     SizedBox(
                       height: 6,
                     ),
@@ -219,7 +222,6 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Checkbox(
                           value: isSave,
-                          fillColor: MaterialStateProperty.all(MyColors.yellow),
                           onChanged: (bool? value) {
                             setState(() {
                               isSave = value!;
@@ -228,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "Remeber",
+                            text: "Remember".tr(),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 setState(() {
@@ -236,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
                                 });
                               },
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -246,27 +248,58 @@ class _LoginPageState extends State<LoginPage> {
                       height: 10,
                     ),
                     SizedBox(
-                      width: 100,
+                      width: 250,
                       height: 50,
                       child: ElevatedButton(
                         onPressed:
                             process ? null : () => {checkInput(canGo: true)},
-                        child: Text("Login"),
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(MyColors.green),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                              side: BorderSide(
-                                width: 0.0,
-                              ),
+                        child: Text("Sign in").tr(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Text(
+                      "Missing a subscription?".tr() + "Contact us".tr() + "!",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            _launchUrl(
+                                "https://www.facebook.com/Smartsystemstechnology");
+                          },
+                          child: Container(
+                            child: Icon(
+                              Icons.facebook,
+                              size: 40,
                             ),
                           ),
                         ),
-                      ),
-                    ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _launchUrl("012952");
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.call,
+                                size: 40,
+                              ),
+                              Text(
+                                "012952",
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),

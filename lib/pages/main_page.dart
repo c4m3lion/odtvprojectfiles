@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:wakelock/wakelock.dart';
 
 class MainPage extends StatefulWidget {
@@ -89,8 +88,13 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  void callBack() {
+    setState(() {});
+  }
+
   @override
   void initState() {
+    MyPrint.printError("ISLEYIR");
     super.initState();
     Wakelock.disable();
   }
@@ -111,6 +115,7 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       body: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
@@ -161,10 +166,9 @@ class _MainPageState extends State<MainPage> {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) => InkWell(
-                  onTap: () => {
-                    MyNetwork.isVideoPlaying = true,
-                    MyNetwork.currentChanel = MyNetwork.channels[index],
-                    Navigator.pushNamed(context, '/video'),
+                  onTap: () async => {
+                    await MyFunctions.channelButton(context, index),
+                    setState(() {}),
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(
@@ -178,8 +182,7 @@ class _MainPageState extends State<MainPage> {
                       borderRadius: BorderRadius.circular(25.0),
                       child: FadeInImage.assetNetwork(
                         fit: BoxFit.fill,
-                        placeholder:
-                            'assets/icons/loadingicon.png', //kTransparentImage,
+                        placeholder: 'assets/icons/loadingicon.png',
                         image: MyNetwork.channels[index].icon,
                         imageErrorBuilder: (context, url, error) =>
                             SizedBox(width: 200, child: Icon(Icons.error)),
@@ -207,12 +210,14 @@ class _MainPageState extends State<MainPage> {
                         text: "see all",
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            MyPrint.printWarning("see all pressed");
+                            Navigator.pushNamed(context, '/favorite');
                           },
                         style: TextStyle(color: MyColors.white, fontSize: 13)),
                   ),
                   InkWell(
-                    onTap: () => {},
+                    onTap: () => {
+                      Navigator.pushNamed(context, '/favorite'),
+                    },
                     child: RotatedBox(
                       quarterTurns: 1,
                       child: Icon(
@@ -227,31 +232,41 @@ class _MainPageState extends State<MainPage> {
             ),
             SizedBox(
               height: 150,
-              child: ListView.builder(
-                physics: ClampingScrollPhysics(),
-                itemCount: MyNetwork.channels.length,
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) => Card(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: MyColors.green,
-                      width: 2,
+              child: StreamBuilder(
+                stream: MyNetwork.favController.stream,
+                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                  return ListView.builder(
+                    physics: ClampingScrollPhysics(),
+                    itemCount: MyNetwork.favorites.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) => InkWell(
+                      onTap: () async => {
+                        await MyFunctions.favoriteChannelButton(context, index),
+                        setState(() {}),
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            color: MyColors.green,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25.0),
+                          child: FadeInImage.assetNetwork(
+                            fit: BoxFit.fill,
+                            placeholder: 'assets/icons/loadingicon.png',
+                            image: MyNetwork.favorites[index].icon,
+                            imageErrorBuilder: (context, url, error) =>
+                                SizedBox(width: 200, child: Icon(Icons.error)),
+                          ),
+                        ),
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(25.0),
-                    child: FadeInImage.assetNetwork(
-                      fit: BoxFit.fill,
-                      placeholder:
-                          'assets/icons/loadingicon.png', //kTransparentImage,
-                      image: MyNetwork.channels[index].icon,
-                      imageErrorBuilder: (context, url, error) =>
-                          SizedBox(width: 200, child: new Icon(Icons.error)),
-                    ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
           ],
@@ -267,7 +282,7 @@ class _MainPageState extends State<MainPage> {
           padding: EdgeInsets.zero,
           children: [
             SizedBox(
-              height: 80,
+              height: 120,
               child: DrawerHeader(
                 decoration: BoxDecoration(
                   color: MyColors.yellow,
@@ -286,8 +301,11 @@ class _MainPageState extends State<MainPage> {
                 color: MyColors.yellow,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[
+                  children: <Widget>[
                     ListTile(
+                      onTap: () => {
+                        Navigator.pushNamed(context, '/channels'),
+                      },
                       leading: Icon(Icons.tv),
                       title: Text('Channels'),
                     ),
@@ -306,10 +324,13 @@ class _MainPageState extends State<MainPage> {
                 color: MyColors.yellow,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[
+                  children: <Widget>[
                     ListTile(
+                      onTap: () => {
+                        Navigator.pushNamed(context, '/favorite'),
+                      },
                       leading: Icon(Icons.favorite),
-                      title: Text('Favorites'),
+                      title: Text('favorite'),
                     ),
                   ],
                 ),

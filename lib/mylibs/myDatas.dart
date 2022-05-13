@@ -1,4 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
+
+class MyLanguage {
+  //static
+}
+
+class MyVars {
+  bool isRefresh = false;
+}
 
 class MyColors {
   static Color yellow = const Color(0xffFFC914);
@@ -35,5 +47,62 @@ class MyPrint {
         );
       },
     );
+  }
+
+  static void dialog(BuildContext context, String _title, String _content) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(_title),
+          content: Text(_content),
+          actions: [
+            ElevatedButton(
+              autofocus: true,
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class MyPaints {
+  static Color selectedColor = Colors.cyan;
+}
+
+class MyFunctions {
+  final storage = const FlutterSecureStorage();
+  static Future<void> searchChannelButton(
+      BuildContext context, int index) async {
+    MyNetwork.isVideoPlaying = true;
+    MyNetwork.currentChanel = MyNetwork.channelsSeach[index];
+    MyPrint.printWarning(MyNetwork.currentChanel.name);
+    await Navigator.pushNamed(context, '/loading');
+  }
+
+  static Future<void> channelButton(BuildContext context, int index) async {
+    MyNetwork.isVideoPlaying = true;
+    MyNetwork.currentChanel = MyNetwork.channels[index];
+    await Navigator.pushNamed(context, '/loading');
+  }
+
+  static Future<void> favoriteChannelButton(
+      BuildContext context, int index) async {
+    MyNetwork.isVideoPlaying = true;
+    MyNetwork.currentChanel = MyNetwork.favorites[index];
+    await Navigator.pushNamed(context, '/loading');
+  }
+
+  void saveStorage(String key, String value) async {
+    await storage.write(key: key, value: value);
+  }
+
+  Future<String> getStorage(String key) async {
+    return await storage.read(key: key) ?? "";
   }
 }
