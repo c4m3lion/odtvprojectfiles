@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
     String crt = await storage.read(key: "currentChannel") ?? "0";
     MyNetwork().loadChannelById(crt);
 
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacementNamed(context, '/TvVideoPage');
   }
 
   void _launchUrl(String _url) async {

@@ -34,21 +34,24 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.4
   flutter_secure_storage: ^5.0.2
-  video_thumbnail: ^0.4.3
+  video_thumbnail: ^0.5.0
   transparent_image: ^2.0.0
   loading_gifs: ^0.3.0
   video_player: ^2.2.14
-  wakelock: ^0.5.6
+  wakelock: ^0.6.1+2
   chewie: ^1.2.2
-  better_player: ^0.0.81
+  better_player: ^0.0.82
   intl: ^0.17.0
   easy_localization: ^3.0.0
   country_icons: ^2.0.2
   cached_network_image: ^3.2.0
   device_info_plus: ^3.2.3
-  scrollable_positioned_list: ^0.2.3
+  scrollable_positioned_list: ^0.3.2
   url_launcher: ^6.1.0
   shared_preferences: ^2.0.13
+  basic_utils: ^4.2.2
+  fraction: ^4.0.1
+  pointer_interceptor: ^0.9.3+1
 
 dev_dependencies:
   flutter_test:
@@ -59,7 +62,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
   flutter_launcher_icons: "^0.9.2"
 
 flutter_icons:

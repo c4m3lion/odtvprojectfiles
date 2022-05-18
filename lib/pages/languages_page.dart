@@ -97,6 +97,27 @@ class LanguagesPage extends StatelessWidget {
                 ),
               ),
             ),
+            InkWell(
+              onTap: () => {
+                context.setLocale(Locale('ru')),
+                Navigator.pop(context),
+              },
+              child: Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      leading: Image.asset(
+                        'icons/flags/png/ru.png',
+                        package: 'country_icons',
+                        width: 60,
+                      ),
+                      title: Text('Russian'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

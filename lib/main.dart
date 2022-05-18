@@ -8,6 +8,7 @@ import 'package:odtvprojectfiles/main_old.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/pages/languages_page.dart';
 import 'package:odtvprojectfiles/pages/newPages/newMenu.dart';
+import 'package:odtvprojectfiles/screens/TV/VideoPage/tv_video_page.dart';
 import 'package:odtvprojectfiles/screens/device_selection_page.dart';
 import 'package:odtvprojectfiles/screens/home_page.dart';
 import 'package:odtvprojectfiles/screens/login_page.dart';
@@ -37,6 +38,7 @@ void main() async {
         Locale('az'),
         Locale('uk'),
         Locale('ar'),
+        Locale('ru'),
       ],
       path:
           'assets/translations', // <-- change the path of the translation files
@@ -112,6 +114,7 @@ class MyApp extends StatelessWidget {
           '/home': (context) => HomePage(),
           '/language': (context) => LanguagesPage(),
           '/mainhome': (context) => NewMainPage(),
+          '/TvVideoPage': (context) => TvVideoPage(),
         },
       ),
     );

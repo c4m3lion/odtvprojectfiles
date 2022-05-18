@@ -144,6 +144,9 @@ class _OvelLayPageState extends State<OverlayPage>
           await Future.delayed(Duration(milliseconds: 100));
           FocusScope.of(context).requestFocus(focusNodeCat);
         }
+        if (key.isKeyPressed(LogicalKeyboardKey.contextMenu) &&
+            key.isKeyPressed(LogicalKeyboardKey.space) &&
+            MyLocalData.isCahnnalPart == false) {}
         if (key.isKeyPressed(LogicalKeyboardKey.arrowRight) &&
             MyLocalData.isCahnnalPart) {
           MyLocalData.isCahnnalPart = false;
@@ -151,6 +154,7 @@ class _OvelLayPageState extends State<OverlayPage>
           setState(() {});
           FocusScope.of(context).requestFocus(focusNodeChannel);
         }
+
         if (key.isKeyPressed(LogicalKeyboardKey.arrowDown) &&
             MyLocalData.isCahnnalPart) {}
         if (key.isKeyPressed(LogicalKeyboardKey.arrowRight) &&
@@ -228,60 +232,63 @@ class _OvelLayPageState extends State<OverlayPage>
                 },
               ),
             ),
-            AnimatedContainer(
-              duration: Duration(milliseconds: 180),
-              color: const Color(0xff000000).withOpacity(0.50),
-              height: double.infinity,
-              width: 200,
-              child: ScrollablePositionedList.builder(
-                initialScrollIndex: _scrollToChannelIndex(),
-                itemScrollController: itemScrollController,
-                physics: const ClampingScrollPhysics(),
-                itemCount: MyNetwork.currentChannels.length,
-                itemBuilder: (context, index) {
-                  return Material(
-                    color: MyNetwork.currentChannels[index].id ==
-                            MyNetwork.currentChanel.id
-                        ? Colors.cyan.withOpacity(0.4)
-                        : Colors.transparent,
-                    child: ListTile(
-                      contentPadding: EdgeInsets.all(10),
-                      title: Text(MyNetwork.currentChannels[index].name),
-                      autofocus: index == currentActiveChannel,
-                      focusNode: index == currentActiveChannel
-                          ? focusNodeChannel
-                          : null,
-                      onTap: () async {
-                        MyNetwork.currentChanel =
-                            MyNetwork.currentChannels[index];
-                        MyLocalData.selectedCurrentChannel = index;
-                        FlutterSecureStorage storage = FlutterSecureStorage();
-                        await storage.write(
-                            key: "currentChannel",
-                            value:
-                                MyNetwork.currentChannels[index].id.toString());
-                        setState(() {
-                          widget.changeVideo();
-                        });
-                      },
-                      leading: CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                          MyNetwork.currentChannels[index].icon,
+            Expanded(
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 180),
+                color: const Color(0xff000000).withOpacity(0.50),
+                height: double.infinity,
+                child: ScrollablePositionedList.builder(
+                  initialScrollIndex: _scrollToChannelIndex(),
+                  itemScrollController: itemScrollController,
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: MyNetwork.currentChannels.length,
+                  itemBuilder: (context, index) {
+                    return Material(
+                      color: MyNetwork.currentChannels[index].id ==
+                              MyNetwork.currentChanel.id
+                          ? Colors.cyan.withOpacity(0.4)
+                          : Colors.transparent,
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(10),
+                        title: Text(MyNetwork.currentChannels[index].name),
+                        autofocus: index == currentActiveChannel,
+                        focusNode: index == currentActiveChannel
+                            ? focusNodeChannel
+                            : null,
+                        onTap: () async {
+                          MyNetwork.currentChanel =
+                              MyNetwork.currentChannels[index];
+                          MyLocalData.selectedCurrentChannel = index;
+                          FlutterSecureStorage storage = FlutterSecureStorage();
+                          await storage.write(
+                              key: "currentChannel",
+                              value: MyNetwork.currentChannels[index].id
+                                  .toString());
+                          setState(() {
+                            widget.changeVideo();
+                          });
+                        },
+                        leading: CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(
+                            MyNetwork.currentChannels[index].icon,
+                          ),
                         ),
+                        selected: MyNetwork.currentChannels[index].id ==
+                            MyNetwork.currentChanel.id,
+                        trailing: MyNetwork.currentChannels[index].isFavorite
+                            ? Icon(Icons.favorite)
+                            : Icon(Icons.favorite_border_outlined),
                       ),
-                      selected: MyNetwork.currentChannels[index].id ==
-                          MyNetwork.currentChanel.id,
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
-            Expanded(child: SizedBox()),
             MyNetwork.currectPageEPG.length > 0
                 ? Container(
                     color: const Color(0xff000000).withOpacity(0.50),
                     height: double.infinity,
-                    width: 300,
+                    width: 400,
                     child: ScrollablePositionedList.builder(
                         initialScrollIndex: _scrollToIndex(),
                         itemCount: MyNetwork.currectEPG.length,
@@ -301,7 +308,9 @@ class _OvelLayPageState extends State<OverlayPage>
                           );
                         }),
                   )
-                : const SizedBox(),
+                : const SizedBox(
+                    width: 400,
+                  ),
           ],
         ),
       ),

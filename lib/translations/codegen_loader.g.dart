@@ -43,7 +43,8 @@ class CodegenLoader extends AssetLoader{
   "Ukraine": "أوكرانيا",
   "User": "المستعمل",
   "Wrong account or password": "حساب أو كلمة مرور خاطئة",
-  "hello_world": "مرحبا بالعالم"
+  "hello_world": "مرحبا بالعالم",
+  "Log in": "تسجيل الدخول"
 };
 static const Map<String,dynamic> az = {
   "hello_world": "Salam dünya",
@@ -74,7 +75,8 @@ static const Map<String,dynamic> az = {
   "Missing a subcription": "Abunəliyiniz yoxdur?",
   "Ukraine": "Ukrayna",
   "User": "İstifadəçi",
-  "Log out": "Çıxış"
+  "Log out": "Çıxış",
+  "Log in": "Daxil ol"
 };
 static const Map<String,dynamic> en = {
   "hello_world": "Hello world",
@@ -105,7 +107,40 @@ static const Map<String,dynamic> en = {
   "Missing a subcription": "Missing a subscription?",
   "Ukraine": "Ukraine",
   "User": "User",
-  "Log out": "Log out"
+  "Log out": "Log out",
+  "Log in": "Log in"
+};
+static const Map<String,dynamic> ru = {
+  "Account": "Аккаунт",
+  "Account can not be empty": "Аккаунт не может быть пустым",
+  "Channels": "Каналы",
+  "Contact us": "Связаться с нами!",
+  "Educational": "Образовательный",
+  "Entertainment": "Развлекательная программа",
+  "Expires": "Истекает",
+  "Favorites": "Избранное",
+  "Kids": "Дети",
+  "Language": "Язык",
+  "Log in": "Авторизоваться",
+  "Log out": "Выйти",
+  "Missing a subcription": "Не хватает подписки?",
+  "Movies": "Кино",
+  "Music": "Музыка",
+  "National": "Национальный",
+  "News": "Новости",
+  "Package": "Упаковка",
+  "Password": "Пароль",
+  "Password can not be empty": "Пароль не может быть пустым",
+  "Primary": "Начальный",
+  "Remember": "Помните",
+  "Settings": "Настройки",
+  "Sign in": "Войти",
+  "Sign out": "Выход",
+  "Sport": "Спорт",
+  "Ukraine": "Украина",
+  "User": "Пользователь",
+  "Wrong account or password": "Неверный аккаунт или пароль",
+  "hello_world": "Привет, мир"
 };
 static const Map<String,dynamic> uk = {
   "Account": "Рахунок",
@@ -136,7 +171,8 @@ static const Map<String,dynamic> uk = {
   "Ukraine": "Україна",
   "User": "Користувач",
   "Wrong account or password": "Неправильний обліковий запис або пароль",
-  "hello_world": "Привіт Світ"
+  "hello_world": "Привіт Світ",
+  "Log in": "Увійти"
 };
-static const Map<String, Map<String,dynamic>> mapLocales = {"ar": ar, "az": az, "en": en, "uk": uk};
+static const Map<String, Map<String,dynamic>> mapLocales = {"ar": ar, "az": az, "en": en, "ru": ru, "uk": uk};
 }

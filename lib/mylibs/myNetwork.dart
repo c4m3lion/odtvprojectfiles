@@ -247,7 +247,7 @@ class MyNetwork {
               .format(DateTime.fromMillisecondsSinceEpoch(c.start));
           var tempTime = DateFormat('dd/MM')
               .format(DateTime.fromMillisecondsSinceEpoch(c.start));
-          c.enddt = DateFormat('hh:mm')
+          c.enddt = DateFormat('HH:mm')
               .format(DateTime.fromMillisecondsSinceEpoch(c.end));
           c.description = i['description'];
           if (tempTodayTime == "--") {

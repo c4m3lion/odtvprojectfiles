@@ -100,7 +100,7 @@ class _ChannelsPageState extends State<ChannelsPage> {
                       await storage.write(
                           key: "currentChannel",
                           value: MyNetwork.currentChannels[index].name);
-                      Navigator.pushNamed(context, '/home');
+                      Navigator.pushNamed(context, '/TvVideoPage');
                     },
                     leading: CircleAvatar(
                       backgroundImage: CachedNetworkImageProvider(
