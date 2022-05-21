@@ -63,6 +63,31 @@ class _TvVideoPageState extends State<TvVideoPage> {
     return double.tryParse(s) != null;
   }
 
+  void openDialo() async {
+    final value = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text('Are you sure you want to exit?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text('Yes, exit'),
+                onPressed: () {
+                  //exit(0)
+                  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -112,7 +137,7 @@ class _TvVideoPageState extends State<TvVideoPage> {
       }
       if (event.runtimeType.toString() == 'RawKeyUpEvent' &&
           event.logicalKey == LogicalKeyboardKey.goBack) {
-        Navigator.pushReplacementNamed(context, '/mainhome');
+        openDialo();
       }
       if (isNumeric(event.logicalKey.keyLabel) &&
           event.runtimeType.toString() == 'RawKeyDownEvent') {
@@ -139,6 +164,7 @@ class _TvVideoPageState extends State<TvVideoPage> {
                 autofocus: true,
                 focusNode: focusNode,
                 focusColor: Colors.transparent,
+                splashColor: Colors.transparent,
                 onTap: () {
                   Navigator.of(context).push(
                     PageRouteBuilder(
@@ -147,7 +173,8 @@ class _TvVideoPageState extends State<TvVideoPage> {
                     ),
                   );
                 },
-                child: Center(child: TvVideo()),
+                child: Container(
+                    color: Colors.black, child: Center(child: TvVideo())),
               ),
               isNumberOverlay ? NumberOverLay(context) : SizedBox(),
             ],

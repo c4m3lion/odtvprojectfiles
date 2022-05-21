@@ -6,6 +6,7 @@ import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 import 'package:odtvprojectfiles/mylibs/myVideoFunctions.dart';
 import 'package:odtvprojectfiles/screens/TV/VideoPage/tvsetting/change_aspect_ratio.dart';
+import 'package:odtvprojectfiles/screens/TV/VideoPage/tvsetting/change_bitrate.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 class TvVideoInfo extends StatefulWidget {
@@ -101,7 +102,10 @@ class _TvVideoInfoState extends State<TvVideoInfo> {
                                 fit: BoxFit.fitWidth);
                           },
                         ),
-                        title: Text(MyNetwork.currentChanel.name),
+                        title: Text(
+                            (MyNetwork.currentChanel.pos + 1).toString() +
+                                ". " +
+                                MyNetwork.currentChanel.name),
                         subtitle: Text(getCurrentEPG().title),
                         trailing: MyNetwork.currentChanel.isFavorite
                             ? Icon(Icons.favorite)
@@ -138,9 +142,6 @@ class _TvVideoInfoState extends State<TvVideoInfo> {
                                 ? "Add to Favorites"
                                 : "Remove from Favorites")
                             .tr(),
-                        subtitle: Text(MyVideoFunctions.aspectRatio
-                            .toFraction()
-                            .toString()),
                         onTap: () {
                           addFav(id: MyNetwork.currentChanel.id);
 
@@ -154,23 +155,39 @@ class _TvVideoInfoState extends State<TvVideoInfo> {
                             .toFraction()
                             .toString()),
                         onTap: () {
-                          Navigator.of(context).push(
-                            PageRouteBuilder(
-                              opaque: false, // set to false
-                              pageBuilder: (_, __, ___) => TvChangeResolution(),
-                            ),
-                          );
+                          Navigator.of(context)
+                              .push(
+                                PageRouteBuilder(
+                                  opaque: false, // set to false
+                                  pageBuilder: (_, __, ___) =>
+                                      TvChangeResolution(),
+                                ),
+                              )
+                              .then((value) => setState(() {}));
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.network_check_sharp),
+                        title: Text("Bitrate").tr(),
+                        subtitle: Text(
+                            MyVideoFunctions.bitrate.toFraction().toString() +
+                                " MBit/s"),
+                        onTap: () {
+                          // Navigator.of(context)
+                          //     .push(
+                          //       PageRouteBuilder(
+                          //         opaque: false, // set to false
+                          //         pageBuilder: (_, __, ___) =>
+                          //             TvChangeBitrate(),
+                          //       ),
+                          //     )
+                          //     .then((value) => setState(() {}));
                         },
                       ),
                       ListTile(
                         leading: Icon(Icons.screenshot_monitor_rounded),
                         title: Text("Resolution").tr(),
                         subtitle: Text("1920x1080"),
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.network_check_sharp),
-                        title: Text("Bitrate").tr(),
-                        subtitle: Text("2.2"),
                       ),
                     ],
                   ),

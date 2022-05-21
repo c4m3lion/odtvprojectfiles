@@ -9,7 +9,7 @@ import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/pages/languages_page.dart';
 import 'package:odtvprojectfiles/pages/newPages/newMenu.dart';
 import 'package:odtvprojectfiles/screens/TV/VideoPage/tv_video_page.dart';
-import 'package:odtvprojectfiles/screens/device_selection_page.dart';
+import 'package:odtvprojectfiles/screens/Phone/device_selection_page.dart';
 import 'package:odtvprojectfiles/screens/home_page.dart';
 import 'package:odtvprojectfiles/screens/login_page.dart';
 import 'package:odtvprojectfiles/translations/codegen_loader.g.dart';

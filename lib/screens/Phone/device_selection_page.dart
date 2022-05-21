@@ -49,43 +49,94 @@ class _DeviceSelectionPageState extends State<DeviceSelectionPage> {
             SizedBox(
               height: 100,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  iconSize: 100,
-                  onPressed: () {
-                    MyFunctions().saveStorage("device", "TV");
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyApp(),
-                        ));
-                  },
-                  icon: ImageIcon(
-                    AssetImage("assets/images/channels-icon.png"),
-                    color: Color(0xFF3A5A98),
-                  ),
-                ),
-                SizedBox(
-                  width: 100,
-                ),
-                IconButton(
-                  iconSize: 100,
-                  onPressed: () {
-                    MyFunctions().saveStorage("device", "Android");
-                    Navigator.pushReplacementNamed(context, "/login");
-                  },
-                  icon: ImageIcon(
-                    AssetImage("assets/images/telephone-image.png"),
-                    color: Color(0xFF3A5A98),
-                  ),
-                )
-              ],
+            Expanded(
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  if (constraints.maxWidth > 600) {
+                    return buildRow();
+                  } else {
+                    return buildColumn();
+                  }
+                },
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          iconSize: 100,
+          onPressed: () {
+            MyFunctions().saveStorage("device", "TV");
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyApp(),
+                ));
+          },
+          icon: ImageIcon(
+            AssetImage("assets/images/channels-icon.png"),
+            color: Color(0xFF3A5A98),
+          ),
+        ),
+        SizedBox(
+          width: 100,
+        ),
+        IconButton(
+          iconSize: 100,
+          onPressed: () {
+            MyFunctions().saveStorage("device", "Android");
+            Navigator.pushReplacementNamed(context, "/login");
+          },
+          icon: ImageIcon(
+            AssetImage("assets/images/telephone-image.png"),
+            color: Color(0xFF3A5A98),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget buildColumn() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        IconButton(
+          iconSize: 150,
+          onPressed: () {
+            MyFunctions().saveStorage("device", "Android");
+            Navigator.pushReplacementNamed(context, "/login");
+          },
+          icon: ImageIcon(
+            AssetImage("assets/images/telephone-image.png"),
+            color: Color(0xFF3A5A98),
+          ),
+        ),
+        SizedBox(
+          height: 100,
+        ),
+        IconButton(
+          iconSize: 100,
+          onPressed: () {
+            MyFunctions().saveStorage("device", "TV");
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyApp(),
+                ));
+          },
+          icon: ImageIcon(
+            AssetImage("assets/images/channels-icon.png"),
+            color: Color(0xFF3A5A98),
+          ),
+        ),
+      ],
     );
   }
 }

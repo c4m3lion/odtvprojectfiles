@@ -22,7 +22,8 @@ import 'package:odtvprojectfiles/pages/video_page.dart';
 import 'package:odtvprojectfiles/pages/videoplayer_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:odtvprojectfiles/screens/device_selection_page.dart';
+import 'package:odtvprojectfiles/screens/Phone/VideoPage/phone_video_player.dart';
+import 'package:odtvprojectfiles/screens/Phone/device_selection_page.dart';
 import 'package:odtvprojectfiles/screens/home_page.dart';
 import 'package:odtvprojectfiles/translations/codegen_loader.g.dart';
 
@@ -91,7 +92,7 @@ class MyAppAndroid extends StatelessWidget {
           '/loading': (context) => LoadingPage(),
           '/main': (context) => MainPagev2(),
           '/oldvideo': (context) => VideoPage(),
-          '/video': (context) => BetterVideoPage(),
+          '/video': (context) => PhoneVideoPlayer(),
           '/video2': (context) => VideoPlayerPage(),
           '/button': (context) => ButtonDetector(),
           '/channels': (context) => ChannelListPage(),

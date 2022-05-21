@@ -88,7 +88,7 @@ class MyFunctions {
   static Future<void> channelButton(BuildContext context, int index) async {
     MyNetwork.isVideoPlaying = true;
     MyNetwork.currentChanel = MyNetwork.channels[index];
-    await Navigator.pushNamed(context, '/loading');
+    await Navigator.pushNamed(context, '/video');
   }
 
   static Future<void> favoriteChannelButton(
