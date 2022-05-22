@@ -20,7 +20,7 @@
         </intent>
     </queries>
    <application
-        android:label="odtvprojectfiles"
+        android:label="odtv"
         android:name="${applicationName}"
         android:banner="@drawable/banner"
         android:icon="@mipmap/launcher_icon">
