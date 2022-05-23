@@ -29,11 +29,16 @@
   "Wrong account or password": "حساب أو كلمة مرور خاطئة",
   "hello_world": "مرحبا بالعالم",
   "Log in": "تسجيل الدخول",
-  "version": "الإصدار",
   "Change app language": "تغيير لغة التطبيق",
   "Remove from favorites": "إزالة من المفضلة",
   "Add to favorites": "اضافة الى المفضلة",
   "Aspect ratio": "ابعاد متزنة",
   "Bitrate": "معدل البت",
-  "Resolution": "دقة"
+  "Resolution": "دقة",
+  "Choose your device": "اختر جهازك",
+  "Version": "الإصدار",
+  "Searching for user...": "البحث عن المستخدم...",
+  "Getting chanels...": "الحصول على القنوات...",
+  "Getting channels...": "...الحصول على القنوات",
+  "Searching for user": "...البحث عن مستخدم"
 }
