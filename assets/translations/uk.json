@@ -29,11 +29,16 @@
   "Wrong account or password": "Неправильний обліковий запис або пароль",
   "hello_world": "Привіт Світ",
   "Log in": "Увійти",
-  "version": "Версія",
   "Change app language": "Змінити мову програми",
   "Remove from favorites": "Видалити з вибраного",
   "Add to favorites": "Додати в обране",
   "Aspect ratio": "Співвідношення сторін",
   "Bitrate": "Бітрейт",
-  "Resolution": "Резолюція"
+  "Resolution": "Резолюція",
+  "Choose your device": "Виберіть свій пристрій",
+  "Version": "Версія",
+  "Searching for user...": "Пошук користувача...",
+  "Getting chanels...": "Отримання каналів...",
+  "Getting channels...": "Отримання каналів...",
+  "Searching for user": "Пошук користувача..."
 }

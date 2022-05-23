@@ -29,11 +29,16 @@
   "User": "User",
   "Log out": "Log out",
   "Log in": "Log in",
-  "version": "Version",
   "Change app language": "Change app language",
   "Remove from favorites": "Remove from favorites",
   "Add to favorites": "Add to favorites",
   "Aspect ratio": "Aspect ratio",
   "Bitrate": "Bitrate",
-  "Resolution": "Resolution"
+  "Resolution": "Resolution",
+  "Choose your device": "Choose your device",
+  "Version": "Version",
+  "Searching for user...": "Searching for user...",
+  "Getting chanels...": "Getting channels...",
+  "Getting channels...": "Getting channels...",
+  "Searching for user": "Searching for user..."
 }

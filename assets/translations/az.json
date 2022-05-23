@@ -29,11 +29,16 @@
   "User": "İstifadəçi",
   "Log out": "Çıxış",
   "Log in": "Daxil ol",
-  "version": "Versiya",
   "Change app language": "Proqram dilini dəyişdirin",
   "Remove from favorites": "Sevimlilərdən silin",
   "Add to favorites": "Sevimlilərə əlavə et",
   "Aspect ratio": "Aspekt nisbəti",
   "Bitrate": "Bitrate",
-  "Resolution": "Görüntü imkanı"
+  "Resolution": "Görüntü imkanı",
+  "Choose your device": "Cihazınızı seçin",
+  "Version": "Versiya",
+  "Searching for user...": "İstifadəçi axtarılır...",
+  "Getting chanels...": "Kanallar əldə edilir...",
+  "Getting channels...": "Kanallar əldə edilir...",
+  "Searching for user": "İstifadəçi axtarılır..."
 }
