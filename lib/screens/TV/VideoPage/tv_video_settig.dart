@@ -84,7 +84,7 @@ class _TvVideoSettingState extends State<TvVideoSetting> {
                   leading: MyNetwork.currentChanel.isFavorite
                       ? Icon(Icons.favorite)
                       : Icon(Icons.favorite_border_outlined),
-                  title: Text('Add to facorites'),
+                  title: Text('Add to favorites'),
                   autofocus: true,
                   onTap: () {
                     addFav(id: MyNetwork.currentChanel.id);

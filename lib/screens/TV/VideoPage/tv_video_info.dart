@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -106,14 +108,18 @@ class _TvVideoInfoState extends State<TvVideoInfo> {
                             (MyNetwork.currentChanel.pos + 1).toString() +
                                 ". " +
                                 MyNetwork.currentChanel.name),
-                        subtitle: Text(getCurrentEPG().title),
+                        subtitle: Text(getCurrentEPG().title != ""
+                            ? getCurrentEPG().title
+                            : "No EPG".tr()),
                         trailing: MyNetwork.currentChanel.isFavorite
                             ? Icon(Icons.favorite)
                             : Icon(Icons.favorite_border_outlined),
                       ),
-                      Text(currentActiveEPG.startdt +
-                          " - " +
-                          currentActiveEPG.enddt),
+                      currentActiveEPG.title != ""
+                          ? Text(currentActiveEPG.startdt +
+                              " - " +
+                              currentActiveEPG.enddt)
+                          : SizedBox(),
                       Padding(
                         padding: EdgeInsets.all(16),
                         child: Text(
@@ -139,8 +145,8 @@ class _TvVideoInfoState extends State<TvVideoInfo> {
                             ? Icon(Icons.favorite)
                             : Icon(Icons.favorite_border_outlined),
                         title: Text(MyNetwork.currentChanel.isFavorite
-                                ? "Add to Favorites"
-                                : "Remove from Favorites")
+                                ? "Remove from favorites".tr()
+                                : "Add to favorites".tr())
                             .tr(),
                         onTap: () {
                           addFav(id: MyNetwork.currentChanel.id);
@@ -150,7 +156,7 @@ class _TvVideoInfoState extends State<TvVideoInfo> {
                       ),
                       ListTile(
                         leading: Icon(Icons.aspect_ratio),
-                        title: Text("Aspect Ratio").tr(),
+                        title: Text("Aspect ratio").tr(),
                         subtitle: Text(MyVideoFunctions.aspectRatio
                             .toFraction()
                             .toString()),
@@ -187,7 +193,8 @@ class _TvVideoInfoState extends State<TvVideoInfo> {
                       ListTile(
                         leading: Icon(Icons.screenshot_monitor_rounded),
                         title: Text("Resolution").tr(),
-                        subtitle: Text("1920x1080"),
+                        subtitle: Text(
+                            "${window.physicalSize.width.toString().replaceAll(('.0'), '')}x${window.physicalSize.height.toString().replaceAll(('.0'), '')}"),
                       ),
                     ],
                   ),

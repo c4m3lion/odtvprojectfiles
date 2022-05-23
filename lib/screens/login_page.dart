@@ -126,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "Login".tr(),
+                        "Log in".tr(),
                         style: const TextStyle(fontSize: 30),
                       ),
                       const Divider(indent: 16),
@@ -142,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           validator: (text) {
                             if (text == null || text.isEmpty) {
-                              return 'Provide an user';
+                              return 'Provide an user'.tr();
                             }
                             return null;
                           },
@@ -207,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                       RichText(
                                         text: TextSpan(
-                                          text: "Remeber",
+                                          text: "Remember".tr(),
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {
                                               setState(() {
@@ -223,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   ElevatedButton(
                                     onPressed: () => processLogin(),
-                                    child: Text("Sign In".tr()),
+                                    child: Text("Sign in").tr(),
                                   ),
                                 ],
                               ),

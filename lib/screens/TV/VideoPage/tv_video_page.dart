@@ -110,7 +110,7 @@ class _TvVideoPageState extends State<TvVideoPage> {
           ),
         );
       }
-      if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+      if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
         int currentChannelIndex = MyNetwork.currentChannels
             .indexWhere((element) => element.id == MyNetwork.currentChanel.id);
         if (currentChannelIndex < (MyNetwork.currentChannels.length - 1)) {
@@ -123,7 +123,7 @@ class _TvVideoPageState extends State<TvVideoPage> {
         MyVideoFunctions.setVideo();
       }
 
-      if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+      if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
         int currentChannelIndex = MyNetwork.currentChannels
             .indexWhere((element) => element.id == MyNetwork.currentChanel.id);
         if (currentChannelIndex > 0) {

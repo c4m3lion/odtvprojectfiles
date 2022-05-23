@@ -60,7 +60,7 @@ class _SettingPageState extends State<SettingPage> {
                   size: 30,
                 ),
                 title: const Text('Language').tr(),
-                subtitle: const Text('Change app language'),
+                subtitle: const Text('Change app language').tr(),
                 isThreeLine: true,
               ),
             ),

@@ -104,22 +104,27 @@ class _TvOverlayState extends State<TvOverlay> {
 
   void addFav({required String id}) async {
     setState(() {});
-    if (!MyNetwork.currentChanel.isFavorite) {
-      MyNetwork.currentChanel.isFavorite = true;
+    if (!MyNetwork.currentChannels[highLighttedChannel].isFavorite) {
+      MyNetwork.currentChannels[highLighttedChannel].isFavorite = true;
       setState(() {});
       String k = await MyNetwork().addFavorite(channel_id: id);
       if (k == "OK") {
-        MyNetwork.currentChanel.isFavorite = true;
+        MyNetwork.currentChannels[highLighttedChannel].isFavorite = true;
       }
     } else {
-      MyNetwork.currentChanel.isFavorite = false;
+      MyNetwork.currentChannels[highLighttedChannel].isFavorite = false;
       setState(() {});
       String k = await MyNetwork().removeFavorite(channel_id: id);
       if (k == "OK") {
-        MyNetwork.currentChanel.isFavorite = false;
+        MyNetwork.currentChannels[highLighttedChannel].isFavorite = false;
       }
     }
     setState(() {});
+  }
+
+  void addFavHighlighted() {
+    print(highLighttedChannel);
+    addFav(id: MyNetwork.currentChannels[highLighttedChannel].id);
   }
 
   @override
@@ -285,68 +290,72 @@ class _TvOverlayState extends State<TvOverlay> {
       flex: 3,
       child: Focus(
         canRequestFocus: false,
-        onKey: (node, event) {
-          if (event.isKeyPressed(LogicalKeyboardKey.keyS) ||
-              event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
-            addFav(id: MyNetwork.currentChannels[highLighttedChannel].id);
-            setState(() {});
-          }
-          return KeyEventResult.ignored;
-        },
         child: ScrollablePositionedList.builder(
           itemScrollController: channelScrollController,
           physics: const ClampingScrollPhysics(),
           itemCount: MyNetwork.currentChannels.length,
           scrollDirection: Axis.vertical,
           itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () => channelChange(index),
-              onFocusChange: (value) {
-                if (value) {
-                  loadEpgs(channel_id: MyNetwork.currentChannels[index].id);
-                  highLighttedChannel = index;
+            return Focus(
+              canRequestFocus: false,
+              onKey: (node, event) {
+                if (event.isKeyPressed(LogicalKeyboardKey.keyS) ||
+                    event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
+                  addFavHighlighted();
+                  setState(() {});
                 }
+                return KeyEventResult.ignored;
               },
-              autofocus: MyNetwork.currentChanel.id ==
-                      MyNetwork.currentChannels[index].id
-                  ? true
-                  : false,
-              child: Container(
-                height: 70,
-                color: MyNetwork.currentChanel.id ==
+              child: InkWell(
+                onTap: () => channelChange(index),
+                onFocusChange: (value) {
+                  if (value) {
+                    loadEpgs(channel_id: MyNetwork.currentChannels[index].id);
+                    highLighttedChannel = index;
+                    setState(() {});
+                  }
+                },
+                autofocus: MyNetwork.currentChanel.id ==
                         MyNetwork.currentChannels[index].id
-                    ? Colors.orange.withOpacity(0.2)
-                    : Colors.transparent,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        (MyNetwork.currentChannels[index].pos + 1).toString(),
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                          MyNetwork.currentChannels[index].icon,
+                    ? true
+                    : false,
+                child: Container(
+                  height: 70,
+                  color: MyNetwork.currentChanel.id ==
+                          MyNetwork.currentChannels[index].id
+                      ? Colors.orange.withOpacity(0.2)
+                      : Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          (MyNetwork.currentChannels[index].pos + 1).toString(),
+                          style: TextStyle(fontSize: 20),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        MyNetwork.currentChannels[index].name,
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      Expanded(child: SizedBox()),
-                      MyNetwork.currentChannels[index].isFavorite
-                          ? Icon(Icons.favorite)
-                          : Icon(Icons.favorite_border_outlined),
-                    ],
+                        SizedBox(
+                          width: 10,
+                        ),
+                        CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(
+                            MyNetwork.currentChannels[index].icon,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          MyNetwork.currentChannels[index].name,
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        Expanded(child: SizedBox()),
+                        MyNetwork.currentChannels[index].isFavorite
+                            ? Icon(Icons.favorite)
+                            : Icon(Icons.favorite_border_outlined),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -432,10 +441,10 @@ class _TvOverlayState extends State<TvOverlay> {
                   );
                 }),
           )
-        : const SizedBox(
+        : SizedBox(
             width: 280,
             child: Center(
-              child: Text("NO EPG!"),
+              child: Text("No EPG").tr(),
             ),
           );
   }
