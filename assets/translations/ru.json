@@ -28,5 +28,12 @@
   "Ukraine": "Украина",
   "User": "Пользователь",
   "Wrong account or password": "Неверный аккаунт или пароль",
-  "hello_world": "Привет, мир"
+  "hello_world": "Привет, мир",
+  "version": "Версия",
+  "Change app language": "Изменить язык приложения",
+  "Remove from favorites": "Удалить из Избранного",
+  "Add to favorites": "Добавить в избранное",
+  "Aspect ratio": "Соотношение сторон",
+  "Bitrate": "Битрейт",
+  "Resolution": "Разрешение"
 }

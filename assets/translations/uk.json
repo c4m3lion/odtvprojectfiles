@@ -28,5 +28,12 @@
   "User": "Користувач",
   "Wrong account or password": "Неправильний обліковий запис або пароль",
   "hello_world": "Привіт Світ",
-  "Log in": "Увійти"
+  "Log in": "Увійти",
+  "version": "Версія",
+  "Change app language": "Змінити мову програми",
+  "Remove from favorites": "Видалити з вибраного",
+  "Add to favorites": "Додати в обране",
+  "Aspect ratio": "Співвідношення сторін",
+  "Bitrate": "Бітрейт",
+  "Resolution": "Резолюція"
 }
