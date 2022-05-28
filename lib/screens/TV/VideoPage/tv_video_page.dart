@@ -104,8 +104,6 @@ class _TvVideoPageState extends State<TvVideoPage> {
           }
         } catch (e) {
           print(e);
-        }
-        if (event.physicalKey == PhysicalKeyboardKey.controlRight) {
           Navigator.of(context).push(
             PageRouteBuilder(
               opaque: false, // set to false

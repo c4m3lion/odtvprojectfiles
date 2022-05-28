@@ -63,8 +63,9 @@ class MyAppAndroid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shortcuts(
-      shortcuts: <LogicalKeySet, Intent>{
-        LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent(),
+      shortcuts: {
+        SingleActivator(LogicalKeyboardKey.select): const ActivateIntent(),
+        SingleActivator(LogicalKeyboardKey.keyH): const ActivateIntent(),
       },
       child: MaterialApp(
         localizationsDelegates: context.localizationDelegates,

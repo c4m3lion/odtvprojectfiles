@@ -70,8 +70,7 @@ class _DeviceSelectionPageState extends State<DeviceSelectionPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-          iconSize: 100,
+        ElevatedButton(
           onPressed: () {
             MyFunctions().saveStorage("device", "TV");
             Navigator.pushReplacement(
@@ -80,7 +79,7 @@ class _DeviceSelectionPageState extends State<DeviceSelectionPage> {
                   builder: (context) => MyApp(),
                 ));
           },
-          icon: ImageIcon(
+          child: ImageIcon(
             AssetImage("assets/images/channels-icon.png"),
             color: Color(0xFF3A5A98),
           ),
@@ -89,15 +88,15 @@ class _DeviceSelectionPageState extends State<DeviceSelectionPage> {
           width: 100,
         ),
         ElevatedButton(
-            onPressed: () {
-              MyFunctions().saveStorage("device", "Android");
-              Navigator.pushReplacementNamed(context, "/login");
-            },
-            child: Image.asset(
-              "assets/images/telephone-image.png",
-              color: Color(0xFF3A5A98),
-              scale: 5,
-            ))
+          onPressed: () {
+            MyFunctions().saveStorage("device", "Android");
+            Navigator.pushReplacementNamed(context, "/login");
+          },
+          child: ImageIcon(
+            AssetImage("assets/images/telephone-image.png"),
+            color: Color(0xFF3A5A98),
+          ),
+        )
       ],
     );
   }
