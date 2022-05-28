@@ -113,17 +113,7 @@ class _TvVideoPageState extends State<TvVideoPage> {
         }
       }
       if (event.logicalKey == LogicalKeyboardKey.contextMenu) {
-        try {
-          if (event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
-            Navigator.of(context).push(
-              PageRouteBuilder(
-                opaque: false, // set to false
-                pageBuilder: (_, __, ___) => TvVideoInfo(),
-              ),
-            );
-          }
-        } catch (e) {
-          MyPrint.printError("Salam qaqas necesen");
+        if (event.runtimeType.toString() == 'RawKeyDownEvent') {
           Navigator.of(context).push(
             PageRouteBuilder(
               opaque: false, // set to false
@@ -133,17 +123,7 @@ class _TvVideoPageState extends State<TvVideoPage> {
         }
       }
       if (event.logicalKey == LogicalKeyboardKey.keyS) {
-        try {
-          if (event.isKeyPressed(LogicalKeyboardKey.keyS)) {
-            Navigator.of(context).push(
-              PageRouteBuilder(
-                opaque: false, // set to false
-                pageBuilder: (_, __, ___) => TvVideoInfo(),
-              ),
-            );
-          }
-        } catch (e) {
-          print(e);
+        if (event.runtimeType.toString() == 'RawKeyDownEvent') {
           Navigator.of(context).push(
             PageRouteBuilder(
               opaque: false, // set to false
