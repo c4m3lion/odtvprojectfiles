@@ -53,6 +53,7 @@ dependencies:
   fraction: ^4.0.1
   pointer_interceptor: ^0.9.3+1
   side_navigation: ^1.0.2
+  flutter_exit_app: ^1.0.5
 
 dev_dependencies:
   flutter_test:

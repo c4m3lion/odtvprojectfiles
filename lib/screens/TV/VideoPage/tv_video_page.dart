@@ -1,6 +1,7 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_exit_app/flutter_exit_app.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 import 'package:odtvprojectfiles/mylibs/myVideoFunctions.dart';
@@ -70,17 +71,16 @@ class _TvVideoPageState extends State<TvVideoPage> {
           return AlertDialog(
             content: Text('Are you sure you want to exit?'),
             actions: <Widget>[
-              TextButton(
+              ElevatedButton(
                 child: Text('No'),
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
               ),
-              TextButton(
+              ElevatedButton(
                 child: Text('Yes, exit'),
                 onPressed: () {
-                  //exit(0)
-                  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  FlutterExitApp.exitApp();
                 },
               ),
             ],
@@ -92,24 +92,79 @@ class _TvVideoPageState extends State<TvVideoPage> {
   void initState() {
     super.initState();
     focusNode = FocusNode(onKey: (node, RawKeyEvent event) {
-      if (event.isKeyPressed(LogicalKeyboardKey.keyS) ||
-          event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
-        Navigator.of(context).push(
-          PageRouteBuilder(
-            opaque: false, // set to false
-            pageBuilder: (_, __, ___) => TvVideoInfo(),
-          ),
-        );
+      if (event.logicalKey == LogicalKeyboardKey.select) {
+        try {
+          if (event.isKeyPressed(LogicalKeyboardKey.select)) {
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                opaque: false, // set to false
+                pageBuilder: (_, __, ___) => TvOverlay(),
+              ),
+            );
+          }
+        } catch (e) {
+          print(e);
+        }
+        if (event.physicalKey == PhysicalKeyboardKey.controlRight) {
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false, // set to false
+              pageBuilder: (_, __, ___) => TvOverlay(),
+            ),
+          );
+        }
       }
+      if (event.logicalKey == LogicalKeyboardKey.contextMenu) {
+        try {
+          if (event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                opaque: false, // set to false
+                pageBuilder: (_, __, ___) => TvVideoInfo(),
+              ),
+            );
+          }
+        } catch (e) {
+          print(e);
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false, // set to false
+              pageBuilder: (_, __, ___) => TvVideoInfo(),
+            ),
+          );
+        }
+      }
+      if (event.logicalKey == LogicalKeyboardKey.keyS) {
+        try {
+          if (event.isKeyPressed(LogicalKeyboardKey.keyS)) {
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                opaque: false, // set to false
+                pageBuilder: (_, __, ___) => TvVideoInfo(),
+              ),
+            );
+          }
+        } catch (e) {
+          print(e);
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false, // set to false
+              pageBuilder: (_, __, ___) => TvVideoInfo(),
+            ),
+          );
+        }
+      }
+      // if (event.isKeyPressed(LogicalKeyboardKey.keyS) ||
+      //     event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
+      //   Navigator.of(context).push(
+      //     PageRouteBuilder(
+      //       opaque: false, // set to false
+      //       pageBuilder: (_, __, ___) => TvVideoInfo(),
+      //     ),
+      //   );
+      // }
       if (event.isKeyPressed(LogicalKeyboardKey.keyA)) {}
-      if (event.isKeyPressed(LogicalKeyboardKey.select)) {
-        Navigator.of(context).push(
-          PageRouteBuilder(
-            opaque: false, // set to false
-            pageBuilder: (_, __, ___) => TvOverlay(),
-          ),
-        );
-      }
+      // dsdf
       if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
         int currentChannelIndex = MyNetwork.currentChannels
             .indexWhere((element) => element.id == MyNetwork.currentChanel.id);
@@ -152,7 +207,7 @@ class _TvVideoPageState extends State<TvVideoPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushReplacementNamed(context, '/mainhome');
+        openDialo();
         return false;
       },
       child: SafeArea(

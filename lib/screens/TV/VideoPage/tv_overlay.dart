@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_exit_app/flutter_exit_app.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 import 'package:odtvprojectfiles/mylibs/myVideoFunctions.dart';
@@ -32,6 +33,8 @@ class _TvOverlayState extends State<TvOverlay> {
   FocusNode categoyFocus = FocusNode();
 
   FocusNode channelNode = FocusNode();
+
+  bool exculudeSidebar = true;
 
   void channelChange(int index) {
     print(MyNetwork.currentChannels[index].name);
@@ -68,12 +71,14 @@ class _TvOverlayState extends State<TvOverlay> {
       if (MyNetwork.currentChanel.id == MyNetwork.currentChannels[i].id) {
         currentActiveCahnnelIndex = i;
         channelScrollController.jumpTo(index: currentActiveCahnnelIndex);
+        setState(() {});
         return;
       }
     }
     if (MyNetwork.currentChannels.length > 0) {
       channelScrollController.jumpTo(index: 0);
     }
+    setState(() {});
   }
 
   int jumpToEpg() {
@@ -127,12 +132,38 @@ class _TvOverlayState extends State<TvOverlay> {
     addFav(id: MyNetwork.currentChannels[highLighttedChannel].id);
   }
 
+  void openDialo() async {
+    final value = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text('Are you sure you want to exit?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text('Yes, exit'),
+                onPressed: () {
+                  FlutterExitApp.exitApp();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     catFocus = FocusNode();
     MyVideoFunctions.setCategory = categoryChange;
+    exculdeChannel = false;
+    setState(() {});
     loadEpgs();
     WidgetsBinding.instance.addPostFrameCallback((_) => jumpToChannel());
   }
@@ -154,106 +185,125 @@ class _TvOverlayState extends State<TvOverlay> {
           child: Row(
             children: [
               //category
-              Focus(
-                canRequestFocus: false,
-                onFocusChange: (value) => {
-                  if (value)
-                    {
-                      catFocus.requestFocus(),
+              ExcludeFocus(
+                excluding: exculudeSidebar,
+                child: Focus(
+                  canRequestFocus: false,
+                  onFocusChange: (value) => {
+                    if (value)
+                      {
+                        catFocus.requestFocus(),
+                      }
+                  },
+                  onKey: (node, event) {
+                    if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+                      exculdeChannel = true;
+                      exculdeCategory = false;
+
+                      exculudeSidebar = true;
+                      setState(() {});
+                      categoyFocus.requestFocus();
+                      return KeyEventResult.handled;
                     }
-                },
-                child: Container(
-                  color: Colors.black,
-                  width: 60,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      InkWell(
-                        focusNode:
-                            selectedPageIndex == 0 ? catFocus : FocusNode(),
-                        onFocusChange: (value) => {
-                          if (value)
-                            {
-                              setState(() {
-                                selectedPageIndex = 0;
-                              })
-                            }
-                        },
-                        onTap: () {
-                          setState(() {
-                            selectedPageIndex = 0;
-                          });
-                        },
-                        child: SizedBox(
-                          height: 30,
-                          child: Image.asset(
-                            "assets/images/channels-icon.png",
-                            color: 0 == selectedPageIndex
-                                ? MyPaints.selectedColor
-                                : null,
+                    if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+                      return KeyEventResult.handled;
+                    }
+                    return KeyEventResult.ignored;
+                  },
+                  child: Container(
+                    color: Colors.black,
+                    width: 60,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        InkWell(
+                          focusNode:
+                              selectedPageIndex == 0 ? catFocus : FocusNode(),
+                          onFocusChange: (value) => {
+                            if (value)
+                              {
+                                setState(() {
+                                  selectedPageIndex = 0;
+                                })
+                              }
+                          },
+                          onTap: () {
+                            setState(() {
+                              selectedPageIndex = 0;
+                            });
+                          },
+                          child: Material(
+                            child: SizedBox(
+                              height: 30,
+                              child: Image.asset(
+                                "assets/images/channels-icon.png",
+                                color: 0 == selectedPageIndex
+                                    ? MyPaints.selectedColor
+                                    : null,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      InkWell(
-                        focusNode:
-                            selectedPageIndex == 1 ? catFocus : FocusNode(),
-                        onFocusChange: (value) => {
-                          if (value)
-                            {
-                              setState(() {
-                                selectedPageIndex = 1;
-                              })
-                            }
-                        },
-                        onTap: () {
-                          setState(() {
-                            selectedPageIndex = 1;
-                          });
-                        },
-                        child: SizedBox(
-                          height: 30,
-                          child: Image.asset(
-                            "assets/images/settings-icon.png",
-                            color: 1 == selectedPageIndex
-                                ? MyPaints.selectedColor
-                                : null,
+                        SizedBox(
+                          height: 20,
+                        ),
+                        InkWell(
+                          focusNode:
+                              selectedPageIndex == 1 ? catFocus : FocusNode(),
+                          onFocusChange: (value) => {
+                            if (value)
+                              {
+                                setState(() {
+                                  selectedPageIndex = 1;
+                                })
+                              }
+                          },
+                          onTap: () {
+                            setState(() {
+                              selectedPageIndex = 1;
+                            });
+                          },
+                          child: SizedBox(
+                            height: 30,
+                            child: Image.asset(
+                              "assets/images/settings-icon.png",
+                              color: 1 == selectedPageIndex
+                                  ? MyPaints.selectedColor
+                                  : null,
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(child: SizedBox()),
-                      InkWell(
-                        focusNode:
-                            selectedPageIndex == 2 ? catFocus : FocusNode(),
-                        onFocusChange: (value) => {
-                          if (value)
-                            {
-                              setState(() {
-                                selectedPageIndex = 2;
-                              })
-                            }
-                        },
-                        onTap: () {
-                          SystemChannels.platform
-                              .invokeMethod('SystemNavigator.pop');
-                        },
-                        child: Container(
-                          height: 40,
-                          color: Colors.transparent,
-                          child: Image.asset(
-                            "assets/images/shutdownicon.png",
-                            color: 2 == selectedPageIndex
-                                ? MyPaints.selectedColor
-                                : null,
+                        Expanded(child: SizedBox()),
+                        InkWell(
+                          focusNode:
+                              selectedPageIndex == 2 ? catFocus : FocusNode(),
+                          onFocusChange: (value) => {
+                            if (value)
+                              {
+                                setState(() {
+                                  selectedPageIndex = 2;
+                                })
+                              }
+                          },
+                          onTap: () {
+                            openDialo();
+                          },
+                          child: Container(
+                            height: 40,
+                            color: Colors.transparent,
+                            child: Image.asset(
+                              "assets/images/shutdownicon.png",
+                              color: 2 == selectedPageIndex
+                                  ? MyPaints.selectedColor
+                                  : null,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -284,132 +334,204 @@ class _TvOverlayState extends State<TvOverlay> {
     );
   }
 
+  bool exculdeChannel = false;
   Widget buildChannel() {
     //Cahnnels
     return Expanded(
       flex: 3,
-      child: Focus(
-        canRequestFocus: false,
-        child: ScrollablePositionedList.builder(
-          itemScrollController: channelScrollController,
-          physics: const ClampingScrollPhysics(),
-          itemCount: MyNetwork.currentChannels.length,
-          scrollDirection: Axis.vertical,
-          itemBuilder: (context, index) {
-            return Focus(
-              canRequestFocus: false,
-              onKey: (node, event) {
-                if (event.isKeyPressed(LogicalKeyboardKey.keyS) ||
-                    event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
+      child: ExcludeFocus(
+        excluding: exculdeChannel,
+        child: Focus(
+          canRequestFocus: false,
+          onKey: (node, event) {
+            // if (event.isKeyPressed(LogicalKeyboardKey.keyS) ||
+            //     event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
+            //   addFavHighlighted();
+            //   setState(() {});
+            // }
+            if (event.logicalKey == LogicalKeyboardKey.contextMenu) {
+              try {
+                if (event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
                   addFavHighlighted();
                   setState(() {});
                 }
-                return KeyEventResult.ignored;
-              },
-              child: InkWell(
-                onTap: () => channelChange(index),
-                onFocusChange: (value) {
-                  if (value) {
-                    loadEpgs(channel_id: MyNetwork.currentChannels[index].id);
-                    highLighttedChannel = index;
+              } catch (e) {
+                print(e);
+                addFavHighlighted();
+                setState(() {});
+              }
+            }
+            if (event.logicalKey == LogicalKeyboardKey.keyS) {
+              try {
+                if (event.isKeyPressed(LogicalKeyboardKey.keyS)) {
+                  addFavHighlighted();
+                  setState(() {});
+                }
+              } catch (e) {
+                print(e);
+                addFavHighlighted();
+                setState(() {});
+              }
+            }
+            if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+              return KeyEventResult.handled;
+            }
+            if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+              exculdeCategory = false;
+              exculdeChannel = true;
+              exculudeSidebar = true;
+              setState(() {});
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: ScrollablePositionedList.builder(
+            itemScrollController: channelScrollController,
+            physics: const ClampingScrollPhysics(),
+            itemCount: MyNetwork.currentChannels.length,
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) {
+              return Focus(
+                canRequestFocus: false,
+                onKey: (node, event) {
+                  if (event.isKeyPressed(LogicalKeyboardKey.keyS) ||
+                      event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
+                    addFavHighlighted();
                     setState(() {});
                   }
+                  return KeyEventResult.ignored;
                 },
-                autofocus: MyNetwork.currentChanel.id ==
-                        MyNetwork.currentChannels[index].id
-                    ? true
-                    : false,
-                child: Container(
-                  height: 70,
-                  color: MyNetwork.currentChanel.id ==
+                child: InkWell(
+                  onTap: () => channelChange(index),
+                  onFocusChange: (value) {
+                    if (value) {
+                      loadEpgs(channel_id: MyNetwork.currentChannels[index].id);
+                      highLighttedChannel = index;
+                      setState(() {});
+                    }
+                  },
+                  autofocus: MyNetwork.currentChanel.id ==
                           MyNetwork.currentChannels[index].id
-                      ? Colors.orange.withOpacity(0.2)
-                      : Colors.transparent,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          (MyNetwork.currentChannels[index].pos + 1).toString(),
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(
-                            MyNetwork.currentChannels[index].icon,
+                      ? true
+                      : false,
+                  child: Container(
+                    height: 70,
+                    color: MyNetwork.currentChanel.id ==
+                            MyNetwork.currentChannels[index].id
+                        ? Colors.orange.withOpacity(0.2)
+                        : Colors.transparent,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            (MyNetwork.currentChannels[index].pos + 1)
+                                .toString(),
+                            style: TextStyle(fontSize: 20),
                           ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          MyNetwork.currentChannels[index].name,
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        Expanded(child: SizedBox()),
-                        MyNetwork.currentChannels[index].isFavorite
-                            ? Icon(Icons.favorite)
-                            : Icon(Icons.favorite_border_outlined),
-                      ],
+                          SizedBox(
+                            width: 10,
+                          ),
+                          CircleAvatar(
+                            backgroundImage: CachedNetworkImageProvider(
+                              MyNetwork.currentChannels[index].icon,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            MyNetwork.currentChannels[index].name,
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                          Expanded(child: SizedBox()),
+                          MyNetwork.currentChannels[index].isFavorite
+                              ? Icon(Icons.favorite)
+                              : Icon(Icons.favorite_border_outlined),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
+  bool exculdeCategory = true;
   Widget buildCategory() {
-    return Focus(
-      canRequestFocus: false,
-      onFocusChange: (value) => {
-        if (value) categoyFocus.requestFocus(),
-      },
-      child: SizedBox(
-        width: 250,
-        child: ScrollablePositionedList.builder(
-          physics: const ClampingScrollPhysics(),
-          itemCount: MyNetwork.categorys.length,
-          scrollDirection: Axis.vertical,
-          initialScrollIndex: MyVideoFunctions.currentCategoryIndex,
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () => categoryChange(index),
-              autofocus:
-                  MyVideoFunctions.currentCategoryIndex == index ? true : false,
-              focusNode: MyVideoFunctions.currentCategoryIndex == index
-                  ? categoyFocus
-                  : FocusNode(),
-              onFocusChange: (value) {
-                if (value) {
-                  categoryChange(index);
-                }
-              },
-              child: Container(
-                color: MyVideoFunctions.currentCategoryIndex == index
-                    ? Colors.amber.withOpacity(0.2)
-                    : Colors.transparent,
-                height: 70,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Text(
-                      MyNetwork.categorys[index].name,
-                      style: Theme.of(context).textTheme.headline5,
-                    ).tr(),
-                  ),
-                ),
-              ),
-            );
-          },
+    return ExcludeFocus(
+      excluding: exculdeCategory,
+      child: Focus(
+        canRequestFocus: false,
+        onFocusChange: (value) => {
+          if (value) categoyFocus.requestFocus(),
+        },
+        onKey: (node, event) {
+          if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+            exculdeChannel = true;
+            exculdeCategory = true;
+            exculudeSidebar = false;
+            setState(() {});
+            return KeyEventResult.handled;
+          }
+          if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+            exculdeChannel = false;
+            exculdeCategory = true;
+
+            exculudeSidebar = true;
+            setState(() {});
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
+        child: SizedBox(
+          width: 250,
+          child: ScrollablePositionedList.builder(
+            physics: const ClampingScrollPhysics(),
+            itemCount: MyNetwork.categorys.length,
+            scrollDirection: Axis.vertical,
+            initialScrollIndex: MyVideoFunctions.currentCategoryIndex,
+            itemBuilder: (context, index) {
+              return MyNetwork.categorys[index].id != "channel"
+                  ? InkWell(
+                      onTap: () => categoryChange(index),
+                      // autofocus: MyVideoFunctions.currentCategoryIndex == index
+                      //     ? true
+                      //     : false,
+                      focusNode: MyVideoFunctions.currentCategoryIndex == index
+                          ? categoyFocus
+                          : FocusNode(),
+                      onFocusChange: (value) {
+                        if (value) {
+                          categoryChange(index);
+                        }
+                      },
+                      child: Container(
+                        color: MyVideoFunctions.currentCategoryIndex == index
+                            ? Colors.amber.withOpacity(0.2)
+                            : Colors.transparent,
+                        height: 70,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Text(
+                              MyNetwork.categorys[index].name,
+                              style: Theme.of(context).textTheme.headline5,
+                            ).tr(),
+                          ),
+                        ),
+                      ),
+                    )
+                  : SizedBox();
+            },
+          ),
         ),
       ),
     );

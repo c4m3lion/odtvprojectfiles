@@ -88,17 +88,16 @@ class _DeviceSelectionPageState extends State<DeviceSelectionPage> {
         SizedBox(
           width: 100,
         ),
-        IconButton(
-          iconSize: 100,
-          onPressed: () {
-            MyFunctions().saveStorage("device", "Android");
-            Navigator.pushReplacementNamed(context, "/login");
-          },
-          icon: ImageIcon(
-            AssetImage("assets/images/telephone-image.png"),
-            color: Color(0xFF3A5A98),
-          ),
-        )
+        ElevatedButton(
+            onPressed: () {
+              MyFunctions().saveStorage("device", "Android");
+              Navigator.pushReplacementNamed(context, "/login");
+            },
+            child: Image.asset(
+              "assets/images/telephone-image.png",
+              color: Color(0xFF3A5A98),
+              scale: 5,
+            ))
       ],
     );
   }

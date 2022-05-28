@@ -70,7 +70,8 @@ class _SettingPageState extends State<SettingPage> {
                 onTap: () async {
                   FlutterSecureStorage storage = FlutterSecureStorage();
                   await storage.deleteAll();
-                  Navigator.pushReplacementNamed(context, '/login');
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/login', (Route<dynamic> route) => false);
                 },
                 leading: const Icon(
                   Icons.logout,

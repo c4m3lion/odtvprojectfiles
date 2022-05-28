@@ -36,6 +36,8 @@ class _TvVideoState extends State<TvVideo> {
         _videoController?.retryDataSource();
       }
     });
+
+    MyVideoFunctions.videoController = _videoController;
     setState(() {
       loading = false;
     });
@@ -65,11 +67,6 @@ class _TvVideoState extends State<TvVideo> {
     setState(() {});
   }
 
-  void changeBitrate(double bitrate) {
-    MyVideoFunctions.bitrate = bitrate;
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
@@ -85,14 +82,7 @@ class _TvVideoState extends State<TvVideo> {
         DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ],
-      controlsConfiguration: BetterPlayerControlsConfiguration(
-        overflowMenuCustomItems: [
-          BetterPlayerOverflowMenuItem(
-            Icons.account_circle_rounded,
-            "Custom element",
-            () => print("Click!"),
-          )
-        ],
+      controlsConfiguration: const BetterPlayerControlsConfiguration(
         enableOverflowMenu: true,
         playerTheme: BetterPlayerTheme.material,
         enableProgressBar: false,
@@ -108,7 +98,6 @@ class _TvVideoState extends State<TvVideo> {
     MyVideoFunctions.setVideo = setCurrentVideo;
     MyVideoFunctions.openSettingVideo = openVideoSetting;
     MyVideoFunctions.changeAspectRatio = changeAspectRatio;
-    MyVideoFunctions.changeBitrate = changeBitrate;
   }
 
   @override

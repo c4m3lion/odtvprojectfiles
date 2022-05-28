@@ -57,7 +57,8 @@ class CodegenLoader extends AssetLoader{
   "Getting chanels...": "الحصول على القنوات...",
   "Getting channels...": "...الحصول على القنوات",
   "Searching for user": "...البحث عن مستخدم",
-  "No EPG": "لا يوجد دليل البرامج الإلكتروني"
+  "No EPG": "لا يوجد دليل البرامج الإلكتروني",
+  "Video settings": "اعدادات الفيديو"
 };
 static const Map<String,dynamic> az = {
   "hello_world": "Salam dünya",
@@ -102,7 +103,8 @@ static const Map<String,dynamic> az = {
   "Getting chanels...": "Kanallar əldə edilir...",
   "Getting channels...": "Kanallar əldə edilir...",
   "Searching for user": "İstifadəçi axtarılır...",
-  "No EPG": "EPG yoxdur"
+  "No EPG": "EPG yoxdur",
+  "Video settings": "Video parametrləri"
 };
 static const Map<String,dynamic> en = {
   "hello_world": "Hello world",
@@ -147,14 +149,15 @@ static const Map<String,dynamic> en = {
   "Getting chanels...": "Getting channels...",
   "Getting channels...": "Getting channels...",
   "Searching for user": "Searching for user...",
-  "No EPG": "No EPG"
+  "No EPG": "No EPG",
+  "Video settings": "Video settings"
 };
 static const Map<String,dynamic> ru = {
   "Account": "Аккаунт",
   "Account can not be empty": "Аккаунт не может быть пустым",
   "Channels": "Каналы",
   "Contact us": "Связаться с нами!",
-  "Educational": "Познавательный",
+  "Educational": "Познавательные",
   "Entertainment": "Развлекательные",
   "Expires": "Истекает",
   "Favorites": "Избранное",
@@ -164,18 +167,18 @@ static const Map<String,dynamic> ru = {
   "Log out": "Выйти",
   "Missing a subcription": "Не хватает подписки?",
   "Movies": "Фильмы",
-  "Music": "Музыкальный",
-  "National": "Национальный",
+  "Music": "Музыкальные",
+  "National": "Национальные",
   "News": "Новостные",
   "Package": "Упаковка",
   "Password": "Пароль",
   "Password can not be empty": "Пароль не может быть пустым",
-  "Primary": "Основный",
+  "Primary": "Основные",
   "Remember": "Помните",
   "Settings": "Настройки",
   "Sign in": "Войти",
   "Sign out": "Выход",
-  "Sport": "Спортивный",
+  "Sport": "Спортивные",
   "Ukraine": "Украина",
   "User": "Пользователь",
   "Wrong account or password": "Неверный аккаунт или пароль",
@@ -192,7 +195,8 @@ static const Map<String,dynamic> ru = {
   "Getting chanels...": "Получение каналов...",
   "Getting channels...": "Получение каналов...",
   "Searching for user": "Поиск пользователя...",
-  "No EPG": "Нет EPG"
+  "No EPG": "Нет EPG",
+  "Video settings": "Настройки видео"
 };
 static const Map<String,dynamic> uk = {
   "Account": "Рахунок",
@@ -237,7 +241,8 @@ static const Map<String,dynamic> uk = {
   "Getting chanels...": "Отримання каналів...",
   "Getting channels...": "Отримання каналів...",
   "Searching for user": "Пошук користувача...",
-  "No EPG": "Немає EPG"
+  "No EPG": "Немає EPG",
+  "Video settings": "Налаштування відео"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": ar, "az": az, "en": en, "ru": ru, "uk": uk};
 }
