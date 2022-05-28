@@ -104,6 +104,8 @@ class _TvVideoPageState extends State<TvVideoPage> {
           }
         } catch (e) {
           print(e);
+        }
+        if (event.physicalKey == PhysicalKeyboardKey.controlRight) {
           Navigator.of(context).push(
             PageRouteBuilder(
               opaque: false, // set to false
@@ -113,7 +115,26 @@ class _TvVideoPageState extends State<TvVideoPage> {
         }
       }
       if (event.logicalKey == LogicalKeyboardKey.contextMenu) {
-        if (event.runtimeType.toString() == 'RawKeyDownEvent') {
+        try {
+          if (event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                opaque: false, // set to false
+                pageBuilder: (_, __, ___) => TvVideoInfo(),
+              ),
+            );
+          }
+        } catch (e) {
+          print(e);
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false, // set to false
+              pageBuilder: (_, __, ___) => TvVideoInfo(),
+            ),
+          );
+        }
+        if (event.physicalKey == PhysicalKeyboardKey.metaLeft) {
+          print("sdasdas");
           Navigator.of(context).push(
             PageRouteBuilder(
               opaque: false, // set to false
@@ -123,7 +144,17 @@ class _TvVideoPageState extends State<TvVideoPage> {
         }
       }
       if (event.logicalKey == LogicalKeyboardKey.keyS) {
-        if (event.runtimeType.toString() == 'RawKeyDownEvent') {
+        try {
+          if (event.isKeyPressed(LogicalKeyboardKey.keyS)) {
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                opaque: false, // set to false
+                pageBuilder: (_, __, ___) => TvVideoInfo(),
+              ),
+            );
+          }
+        } catch (e) {
+          print(e);
           Navigator.of(context).push(
             PageRouteBuilder(
               opaque: false, // set to false
