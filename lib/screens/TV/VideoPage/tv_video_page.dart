@@ -113,7 +113,6 @@ class _TvVideoPageState extends State<TvVideoPage> {
         }
       }
       if (event.logicalKey == LogicalKeyboardKey.contextMenu) {
-        MyPrint.printError("Salam qaqas necesen");
         try {
           if (event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
             Navigator.of(context).push(
@@ -124,7 +123,7 @@ class _TvVideoPageState extends State<TvVideoPage> {
             );
           }
         } catch (e) {
-          print(e);
+          MyPrint.printError("Salam qaqas necesen");
           Navigator.of(context).push(
             PageRouteBuilder(
               opaque: false, // set to false
