@@ -13,7 +13,7 @@ class DeviceSelectionPage extends StatefulWidget {
 
 class _DeviceSelectionPageState extends State<DeviceSelectionPage> {
   void onInit() async {
-    String dev = await MyFunctions().getStorage("device");
+    String dev = await MyFunctions().getStorage("device1");
     if (dev == "Android") {
       Navigator.pushReplacementNamed(context, "/login");
     }
