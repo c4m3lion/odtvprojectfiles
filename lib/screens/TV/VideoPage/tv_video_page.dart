@@ -126,12 +126,6 @@ class _TvVideoPageState extends State<TvVideoPage> {
           }
         } catch (e) {
           print(e);
-          Navigator.of(context).push(
-            PageRouteBuilder(
-              opaque: false, // set to false
-              pageBuilder: (_, __, ___) => TvVideoInfo(),
-            ),
-          );
         }
         if (event.physicalKey == PhysicalKeyboardKey.metaLeft) {
           print("sdasdas");
