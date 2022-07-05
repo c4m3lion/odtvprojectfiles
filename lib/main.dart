@@ -10,6 +10,7 @@ import 'package:odtvprojectfiles/pages/languages_page.dart';
 import 'package:odtvprojectfiles/pages/newPages/newMenu.dart';
 import 'package:odtvprojectfiles/screens/TV/VideoPage/tv_video_page.dart';
 import 'package:odtvprojectfiles/screens/Phone/device_selection_page.dart';
+import 'package:odtvprojectfiles/screens/TV/device_selection_pageTv.dart';
 import 'package:odtvprojectfiles/screens/home_page.dart';
 import 'package:odtvprojectfiles/screens/login_page.dart';
 import 'package:odtvprojectfiles/translations/codegen_loader.g.dart';
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
       shortcuts: {
         SingleActivator(LogicalKeyboardKey.select): const ActivateIntent(),
         SingleActivator(LogicalKeyboardKey.keyH): const ActivateIntent(),
+        SingleActivator(LogicalKeyboardKey.enter): const ActivateIntent(),
       },
       child: MaterialApp(
         localizationsDelegates: context.localizationDelegates,
@@ -116,6 +118,7 @@ class MyApp extends StatelessWidget {
           '/language': (context) => LanguagesPage(),
           '/mainhome': (context) => NewMainPage(),
           '/TvVideoPage': (context) => TvVideoPage(),
+          '/device': (context) => DeviceSelectionPageTv(),
         },
       ),
     );

@@ -4,16 +4,16 @@ import 'package:odtvprojectfiles/main_old.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 
-class DeviceSelectionPage extends StatefulWidget {
-  const DeviceSelectionPage({Key? key}) : super(key: key);
+class DeviceSelectionPageTv extends StatefulWidget {
+  const DeviceSelectionPageTv({Key? key}) : super(key: key);
 
   @override
-  State<DeviceSelectionPage> createState() => _DeviceSelectionPageState();
+  State<DeviceSelectionPageTv> createState() => _DeviceSelectionPageState();
 }
 
-class _DeviceSelectionPageState extends State<DeviceSelectionPage> {
+class _DeviceSelectionPageState extends State<DeviceSelectionPageTv> {
   void onInit() async {
-    String dev = await MyFunctions().getStorage("device");
+    String dev = await MyFunctions().getStorage("device1");
     if (dev == "Android") {
       Navigator.pushReplacementNamed(context, "/login");
     }

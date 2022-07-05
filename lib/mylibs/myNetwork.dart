@@ -240,6 +240,10 @@ class MyNetwork {
           EPG c = EPG();
           c.title = i['title'];
           c.start = i['start'];
+          if (currectEPG.length > 0 &&
+              currectEPG[currectEPG.length - 1].start == c.start) {
+            continue;
+          }
           c.end = i['end'];
           c.startDate = DateTime.fromMillisecondsSinceEpoch(c.start);
           c.endDate = DateTime.fromMillisecondsSinceEpoch(c.end);

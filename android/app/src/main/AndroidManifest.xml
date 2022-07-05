@@ -23,7 +23,8 @@
         android:label="odtv"
         android:name="${applicationName}"
         android:banner="@drawable/banner"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loading_gifs/loading_gifs.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 import 'package:odtvprojectfiles/mylibs/myVideoFunctions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TvVideo extends StatefulWidget {
   @override
@@ -18,9 +19,23 @@ class _TvVideoState extends State<TvVideo> {
 
   Widget currentVideoState = SizedBox();
 
+  void loadPlaybackIfNotExist() async {
+    String _url =
+        await MyNetwork().getPlayBack(channel_id: MyNetwork.currentChanel.id);
+    if (_url == MyNetwork.currentChanel.playBackUrl) {
+      return;
+    }
+    MyNetwork.currentChanel.playBackUrl = _url;
+    setCurrentVideo();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("${MyNetwork.currentChanel.id}vid",
+        MyNetwork.currentChanel.playBackUrl);
+  }
+
   void setVideo(String _url) {
     loading = true;
     MyNetwork().getEPG();
+    loadPlaybackIfNotExist();
     BetterPlayerDataSource betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       MyNetwork.currentChanel.playBackUrl,
@@ -73,7 +88,7 @@ class _TvVideoState extends State<TvVideo> {
     _videoConfig = BetterPlayerConfiguration(
       autoPlay: true,
       //fullScreenByDefault: true,
-      allowedScreenSleep: false,
+      allowedScreenSleep: true,
       fit: BoxFit.fill,
       expandToFill: true,
       fullScreenAspectRatio: MyVideoFunctions.aspectRatio,
@@ -108,11 +123,13 @@ class _TvVideoState extends State<TvVideo> {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: MyVideoFunctions.aspectRatio,
-      child: loading
-          ? const CircularProgressIndicator()
-          : BetterPlayer(controller: _videoController!),
+    return Center(
+      child: AspectRatio(
+        aspectRatio: MyVideoFunctions.aspectRatio,
+        child: loading
+            ? const CircularProgressIndicator()
+            : BetterPlayer(controller: _videoController!),
+      ),
     );
   }
 }

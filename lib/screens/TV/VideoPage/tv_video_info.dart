@@ -65,19 +65,26 @@ class _TvVideoInfoState extends State<TvVideoInfo> {
     focusNode = FocusNode(
         canRequestFocus: false,
         onKey: (node, RawKeyEvent event) {
-          if (event.logicalKey == LogicalKeyboardKey.contextMenu) {
-            try {
-              if (event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
-                Navigator.pop(context);
-              }
-            } catch (e) {
-              print(e);
-            }
-            if (event.physicalKey == PhysicalKeyboardKey.metaLeft) {
-              print("sdasdas");
+          if (event.runtimeType == RawKeyUpEvent) {
+            if (event.logicalKey == LogicalKeyboardKey.contextMenu ||
+                event.logicalKey == LogicalKeyboardKey.keyS) {
               Navigator.pop(context);
+              return KeyEventResult.handled;
             }
           }
+          // if (event.logicalKey == LogicalKeyboardKey.contextMenu) {
+          //   try {
+          //     if (event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
+          //       Navigator.pop(context);
+          //     }
+          //   } catch (e) {
+          //     print(e);
+          //   }
+          //   if (event.physicalKey == PhysicalKeyboardKey.metaLeft) {
+          //     print("sdasdas");
+          //     Navigator.pop(context);
+          //   }
+          // }
           if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft) ||
               event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
             return KeyEventResult.handled;

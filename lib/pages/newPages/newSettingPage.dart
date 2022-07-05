@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
 
 class SettingPage extends StatefulWidget {
@@ -61,6 +62,22 @@ class _SettingPageState extends State<SettingPage> {
                 ),
                 title: const Text('Language').tr(),
                 subtitle: const Text('Change app language').tr(),
+                isThreeLine: true,
+              ),
+            ),
+            Material(
+              color: Colors.transparent,
+              child: ListTile(
+                onTap: () async {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/device', (Route<dynamic> route) => false);
+                },
+                leading: const Icon(
+                  Icons.devices,
+                  size: 30,
+                ),
+                title: const Text('Change device').tr(),
+                subtitle: const Text(""),
                 isThreeLine: true,
               ),
             ),

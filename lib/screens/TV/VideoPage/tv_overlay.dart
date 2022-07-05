@@ -30,23 +30,34 @@ class _TvOverlayState extends State<TvOverlay> {
   int highLighttedChannel = 0;
 
   FocusNode catFocus = FocusNode();
-  FocusNode categoyFocus = FocusNode();
+  List<FocusNode> categoryFocus = List<FocusNode>.generate(
+      MyNetwork.categorys.length, (int index) => FocusNode());
 
-  FocusNode channelNode = FocusNode();
+  List<FocusNode> channelFocus = List<FocusNode>.generate(
+      MyNetwork.currentChannels.length, (int index) => FocusNode());
+
+  FocusNode curChannelFocus = FocusNode();
 
   bool exculudeSidebar = true;
+  bool exculdeCategory = true;
+  bool exculdeChannel = false;
+  bool exculdeSetting = true;
 
   void channelChange(int index) {
+    MyVideoFunctions.currentCategoryofChannelIndex =
+        MyVideoFunctions.currentCategoryIndex;
     print(MyNetwork.currentChannels[index].name);
     MyNetwork.currentChanel = MyNetwork.currentChannels[index];
-    MyNetwork().getEPG();
+    MyNetwork().getEPG().then(
+        (value) => loadEpgs(channel_id: MyNetwork.currentChannels[index].id));
     setState(() {
       MyVideoFunctions.setVideo();
     });
   }
 
-  void categoryChange(int index) async {
+  void categoryChange(int index) {
     MyVideoFunctions.currentCategoryIndex = index;
+    MyVideoFunctions.currentCategoryofChannelIndex = index;
     if (MyNetwork.categorys[MyVideoFunctions.currentCategoryIndex].id ==
         "channel") {
       MyNetwork.currentChannels = MyNetwork.channels;
@@ -60,10 +71,15 @@ class _TvOverlayState extends State<TvOverlay> {
               element.category.contains(MyNetwork.categorys[index].id)))
           .toList();
     }
+    channelFocus = List<FocusNode>.generate(
+        MyNetwork.currentChannels.length, (int index) => FocusNode());
     MyPrint.printWarning(
         MyNetwork.categorys[MyVideoFunctions.currentCategoryIndex].name);
     WidgetsBinding.instance.addPostFrameCallback((_) => jumpToChannel());
+
     setState(() {});
+    MyPrint.printError(
+        MyVideoFunctions.currentCategoryofChannelIndex.toString());
   }
 
   void jumpToChannel() {
@@ -139,13 +155,13 @@ class _TvOverlayState extends State<TvOverlay> {
           return AlertDialog(
             content: Text('Are you sure you want to exit?'),
             actions: <Widget>[
-              TextButton(
+              ElevatedButton(
                 child: Text('No'),
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
               ),
-              TextButton(
+              ElevatedButton(
                 child: Text('Yes, exit'),
                 onPressed: () {
                   FlutterExitApp.exitApp();
@@ -165,6 +181,7 @@ class _TvOverlayState extends State<TvOverlay> {
     exculdeChannel = false;
     setState(() {});
     loadEpgs();
+    categoryChange(MyVideoFunctions.currentCategoryofChannelIndex);
     WidgetsBinding.instance.addPostFrameCallback((_) => jumpToChannel());
   }
 
@@ -189,20 +206,25 @@ class _TvOverlayState extends State<TvOverlay> {
                 excluding: exculudeSidebar,
                 child: Focus(
                   canRequestFocus: false,
-                  onFocusChange: (value) => {
-                    if (value)
-                      {
-                        catFocus.requestFocus(),
-                      }
-                  },
                   onKey: (node, event) {
                     if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
                       exculdeChannel = true;
-                      exculdeCategory = false;
+                      selectedPageIndex == 0
+                          ? exculdeCategory = false
+                          : exculdeCategory = true;
+                      selectedPageIndex == 1
+                          ? exculdeSetting = false
+                          : exculdeSetting = true;
 
                       exculudeSidebar = true;
                       setState(() {});
-                      categoyFocus.requestFocus();
+
+                      WidgetsBinding.instance.addPostFrameCallback(
+                          (_) => FocusScope.of(context).nextFocus());
+
+                      WidgetsBinding.instance.addPostFrameCallback((_) =>
+                          categoryFocus[MyVideoFunctions.currentCategoryIndex]
+                              .requestFocus());
                       return KeyEventResult.handled;
                     }
                     if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
@@ -211,7 +233,7 @@ class _TvOverlayState extends State<TvOverlay> {
                     return KeyEventResult.ignored;
                   },
                   child: Container(
-                    color: Colors.black,
+                    color: Colors.black.withOpacity(0.5),
                     width: 60,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -219,87 +241,54 @@ class _TvOverlayState extends State<TvOverlay> {
                         SizedBox(
                           height: 20,
                         ),
-                        InkWell(
-                          focusNode:
-                              selectedPageIndex == 0 ? catFocus : FocusNode(),
-                          onFocusChange: (value) => {
-                            if (value)
-                              {
-                                setState(() {
-                                  selectedPageIndex = 0;
-                                })
-                              }
-                          },
-                          onTap: () {
+                        IconButton(
+                          focusColor: Colors.amber,
+                          splashRadius: 50,
+                          iconSize: 100,
+                          onPressed: () {
                             setState(() {
                               selectedPageIndex = 0;
                             });
                           },
-                          child: Material(
-                            child: SizedBox(
-                              height: 30,
-                              child: Image.asset(
-                                "assets/images/channels-icon.png",
-                                color: 0 == selectedPageIndex
-                                    ? MyPaints.selectedColor
-                                    : null,
-                              ),
-                            ),
+                          icon: Image.asset(
+                            "assets/images/channels-icon.png",
+                            color: 0 == selectedPageIndex
+                                ? MyPaints.selectedColor
+                                : null,
                           ),
                         ),
                         SizedBox(
                           height: 20,
                         ),
-                        InkWell(
-                          focusNode:
-                              selectedPageIndex == 1 ? catFocus : FocusNode(),
-                          onFocusChange: (value) => {
-                            if (value)
-                              {
-                                setState(() {
-                                  selectedPageIndex = 1;
-                                })
-                              }
-                          },
-                          onTap: () {
+                        IconButton(
+                          focusColor: Colors.amber,
+                          splashRadius: 50,
+                          iconSize: 100,
+                          onPressed: () {
                             setState(() {
                               selectedPageIndex = 1;
                             });
                           },
-                          child: SizedBox(
-                            height: 30,
-                            child: Image.asset(
-                              "assets/images/settings-icon.png",
-                              color: 1 == selectedPageIndex
-                                  ? MyPaints.selectedColor
-                                  : null,
-                            ),
+                          icon: Image.asset(
+                            "assets/images/settings-icon.png",
+                            color: 1 == selectedPageIndex
+                                ? MyPaints.selectedColor
+                                : null,
                           ),
                         ),
                         Expanded(child: SizedBox()),
-                        InkWell(
-                          focusNode:
-                              selectedPageIndex == 2 ? catFocus : FocusNode(),
-                          onFocusChange: (value) => {
-                            if (value)
-                              {
-                                setState(() {
-                                  selectedPageIndex = 2;
-                                })
-                              }
-                          },
-                          onTap: () {
+                        IconButton(
+                          focusColor: Colors.amber,
+                          splashRadius: 50,
+                          iconSize: 100,
+                          onPressed: () {
                             openDialo();
                           },
-                          child: Container(
-                            height: 40,
-                            color: Colors.transparent,
-                            child: Image.asset(
-                              "assets/images/shutdownicon.png",
-                              color: 2 == selectedPageIndex
-                                  ? MyPaints.selectedColor
-                                  : null,
-                            ),
+                          icon: Image.asset(
+                            "assets/images/shutdownicon.png",
+                            color: 2 == selectedPageIndex
+                                ? MyPaints.selectedColor
+                                : null,
                           ),
                         ),
                       ],
@@ -311,11 +300,37 @@ class _TvOverlayState extends State<TvOverlay> {
               selectedPageIndex == 0
                   ? Expanded(child: buildMainPage())
                   : SizedBox(),
-              selectedPageIndex == 1
-                  ? Expanded(child: SettingPage())
-                  : SizedBox(),
-              selectedPageIndex == 2
-                  ? Expanded(child: SettingPage())
+              selectedPageIndex == 2 || selectedPageIndex == 1
+                  ? Expanded(
+                      child: ExcludeFocus(
+                          excluding: exculdeSetting,
+                          child: Focus(
+                              canRequestFocus: false,
+                              onKey: (node, event) {
+                                if (event.runtimeType == RawKeyUpEvent) {
+                                  if (event.logicalKey ==
+                                      LogicalKeyboardKey.arrowRight) {
+                                    return KeyEventResult.handled;
+                                  }
+                                  if (event.logicalKey ==
+                                      LogicalKeyboardKey.arrowLeft) {
+                                    exculdeChannel = true;
+                                    exculdeCategory = true;
+                                    exculudeSidebar = false;
+                                    exculdeSetting = true;
+                                    setState(() {});
+
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) =>
+                                            FocusScope.of(context).nextFocus());
+                                    return KeyEventResult.handled;
+                                  }
+                                }
+
+                                return KeyEventResult.ignored;
+                              },
+                              child: SettingPage())),
+                    )
                   : SizedBox(),
             ],
           ),
@@ -334,7 +349,6 @@ class _TvOverlayState extends State<TvOverlay> {
     );
   }
 
-  bool exculdeChannel = false;
   Widget buildChannel() {
     //Cahnnels
     return Expanded(
@@ -342,33 +356,11 @@ class _TvOverlayState extends State<TvOverlay> {
       child: ExcludeFocus(
         excluding: exculdeChannel,
         child: Focus(
-          canRequestFocus: false,
+          canRequestFocus: MyNetwork.currentChannels.length > 0 ? false : true,
           onKey: (node, event) {
-            // if (event.isKeyPressed(LogicalKeyboardKey.keyS) ||
-            //     event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
-            //   addFavHighlighted();
-            //   setState(() {});
-            // }
-            if (event.logicalKey == LogicalKeyboardKey.contextMenu) {
-              try {
-                if (event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
-                  addFavHighlighted();
-                  setState(() {});
-                }
-              } catch (e) {
-                print(e);
-                addFavHighlighted();
-                setState(() {});
-              }
-            }
-            if (event.logicalKey == LogicalKeyboardKey.keyS) {
-              try {
-                if (event.isKeyPressed(LogicalKeyboardKey.keyS)) {
-                  addFavHighlighted();
-                  setState(() {});
-                }
-              } catch (e) {
-                print(e);
+            if (event.runtimeType == RawKeyUpEvent) {
+              if (event.logicalKey == LogicalKeyboardKey.contextMenu ||
+                  event.logicalKey == LogicalKeyboardKey.keyS) {
                 addFavHighlighted();
                 setState(() {});
               }
@@ -381,6 +373,10 @@ class _TvOverlayState extends State<TvOverlay> {
               exculdeChannel = true;
               exculudeSidebar = true;
               setState(() {});
+              WidgetsBinding.instance.addPostFrameCallback((_) =>
+                  categoryFocus[MyVideoFunctions.currentCategoryIndex]
+                      .requestFocus());
+
               return KeyEventResult.handled;
             }
             return KeyEventResult.ignored;
@@ -391,13 +387,76 @@ class _TvOverlayState extends State<TvOverlay> {
             itemCount: MyNetwork.currentChannels.length,
             scrollDirection: Axis.vertical,
             itemBuilder: (context, index) {
+              if (MyNetwork.currentChanel.id ==
+                      MyNetwork.currentChannels[index].id ||
+                  index == 0) {
+                curChannelFocus = channelFocus[index];
+              }
               return Focus(
                 canRequestFocus: false,
                 onKey: (node, event) {
-                  if (event.isKeyPressed(LogicalKeyboardKey.keyS) ||
-                      event.isKeyPressed(LogicalKeyboardKey.contextMenu)) {
-                    addFavHighlighted();
-                    setState(() {});
+                  if (event.isKeyPressed(LogicalKeyboardKey.arrowDown) &&
+                      index == MyNetwork.currentChannels.length - 1) {
+                    if (MyVideoFunctions.currentCategoryofChannelIndex <
+                            MyNetwork.categorys.length - 1 &&
+                        MyVideoFunctions.currentCategoryIndex != 0) {
+                      MyVideoFunctions.currentCategoryofChannelIndex++;
+                      categoryChange(
+                          MyVideoFunctions.currentCategoryofChannelIndex);
+                      MyPrint.printError(MyVideoFunctions
+                          .currentCategoryofChannelIndex
+                          .toString());
+                      setState(() {});
+                      WidgetsBinding.instance.addPostFrameCallback((_) =>
+                          FocusScope.of(context).requestFocus(channelFocus[0]));
+
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        channelScrollController.jumpTo(index: 0);
+                        setState(() {});
+                      });
+                      return KeyEventResult.handled;
+                    }
+                    if (MyVideoFunctions.currentCategoryIndex == 0) {
+                      FocusScope.of(context).requestFocus(channelFocus[0]);
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        channelScrollController.jumpTo(index: 0);
+                        setState(() {});
+                      });
+                      return KeyEventResult.handled;
+                    }
+                  }
+                  if (event.isKeyPressed(LogicalKeyboardKey.arrowUp) &&
+                      index == 0) {
+                    if (MyVideoFunctions.currentCategoryofChannelIndex > 0 &&
+                        MyVideoFunctions.currentCategoryIndex != 0) {
+                      MyVideoFunctions.currentCategoryofChannelIndex--;
+                      categoryChange(
+                          MyVideoFunctions.currentCategoryofChannelIndex);
+                      MyPrint.printError(MyVideoFunctions
+                          .currentCategoryofChannelIndex
+                          .toString());
+                      setState(() {});
+                      WidgetsBinding.instance.addPostFrameCallback((_) =>
+                          FocusScope.of(context).requestFocus(
+                              channelFocus[channelFocus.length - 1]));
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        channelScrollController.jumpTo(
+                            index: channelFocus.length - 1);
+                        setState(() {});
+                      });
+                      return KeyEventResult.handled;
+                    }
+                    if (MyVideoFunctions.currentCategoryIndex == 0) {
+                      FocusScope.of(context)
+                          .requestFocus(channelFocus[channelFocus.length - 1]);
+
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        channelScrollController.jumpTo(
+                            index: channelFocus.length - 1);
+                        setState(() {});
+                      });
+                      return KeyEventResult.handled;
+                    }
                   }
                   return KeyEventResult.ignored;
                 },
@@ -410,6 +469,7 @@ class _TvOverlayState extends State<TvOverlay> {
                       setState(() {});
                     }
                   },
+                  focusNode: channelFocus[index],
                   autofocus: MyNetwork.currentChanel.id ==
                           MyNetwork.currentChannels[index].id
                       ? true
@@ -463,29 +523,37 @@ class _TvOverlayState extends State<TvOverlay> {
     );
   }
 
-  bool exculdeCategory = true;
   Widget buildCategory() {
     return ExcludeFocus(
       excluding: exculdeCategory,
       child: Focus(
         canRequestFocus: false,
-        onFocusChange: (value) => {
-          if (value) categoyFocus.requestFocus(),
-        },
         onKey: (node, event) {
+          print(event.data.logicalKey);
+          if (event.runtimeType == RawKeyUpEvent) {
+            if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+              exculdeChannel = false;
+              exculdeCategory = true;
+
+              exculudeSidebar = true;
+              setState(() {});
+              WidgetsBinding.instance.addPostFrameCallback(
+                  (_) => FocusScope.of(context).requestFocus(curChannelFocus));
+
+              return KeyEventResult.handled;
+            }
+          }
           if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
             exculdeChannel = true;
             exculdeCategory = true;
             exculudeSidebar = false;
             setState(() {});
-            return KeyEventResult.handled;
-          }
-          if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-            exculdeChannel = false;
-            exculdeCategory = true;
 
-            exculudeSidebar = true;
-            setState(() {});
+            WidgetsBinding.instance.addPostFrameCallback(
+                (_) => FocusScope.of(context).nextFocus());
+            WidgetsBinding.instance
+                .addPostFrameCallback((_) => catFocus.requestFocus());
+
             return KeyEventResult.handled;
           }
           return KeyEventResult.ignored;
@@ -498,38 +566,34 @@ class _TvOverlayState extends State<TvOverlay> {
             scrollDirection: Axis.vertical,
             initialScrollIndex: MyVideoFunctions.currentCategoryIndex,
             itemBuilder: (context, index) {
-              return MyNetwork.categorys[index].id != "channel"
-                  ? InkWell(
-                      onTap: () => categoryChange(index),
-                      // autofocus: MyVideoFunctions.currentCategoryIndex == index
-                      //     ? true
-                      //     : false,
-                      focusNode: MyVideoFunctions.currentCategoryIndex == index
-                          ? categoyFocus
-                          : FocusNode(),
-                      onFocusChange: (value) {
-                        if (value) {
-                          categoryChange(index);
-                        }
-                      },
-                      child: Container(
-                        color: MyVideoFunctions.currentCategoryIndex == index
-                            ? Colors.amber.withOpacity(0.2)
-                            : Colors.transparent,
-                        height: 70,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: Text(
-                              MyNetwork.categorys[index].name,
-                              style: Theme.of(context).textTheme.headline5,
-                            ).tr(),
-                          ),
-                        ),
+              return Focus(
+                canRequestFocus: false,
+                onFocusChange: (value) {
+                  if (value) {
+                    categoryChange(index);
+                  }
+                },
+                child: InkWell(
+                  onTap: () => categoryChange(index),
+                  focusNode: categoryFocus[index],
+                  child: Container(
+                    color: MyVideoFunctions.currentCategoryIndex == index
+                        ? Colors.amber.withOpacity(0.2)
+                        : Colors.transparent,
+                    height: 70,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          MyNetwork.categorys[index].name,
+                          style: Theme.of(context).textTheme.headline5,
+                        ).tr(),
                       ),
-                    )
-                  : SizedBox();
+                    ),
+                  ),
+                ),
+              );
             },
           ),
         ),
