@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import 'package:mac_address/mac_address.dart';
 
 import 'package:http/http.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
+import 'package:odtvprojectfiles/mylibs/myVideoFunctions.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyNetwork {
@@ -28,7 +32,12 @@ class MyNetwork {
 
   Future<String> login({required String login, required String pass}) async {
     try {
-      String macAdress = "02:00:00:00:00:00";
+      String macAdress = await readFile();
+      if (macAdress == "" || macAdress.isEmpty) {
+        macAdress = await initPlatformState();
+      }
+      MyVideoFunctions.macAdress = macAdress;
+      print("macADress: " + macAdress);
       userInfo = login;
       Response response = await post(
         Uri.parse("https://mw.odtv.az/api/v1/auth"),
@@ -55,6 +64,19 @@ class MyNetwork {
       MyPrint.printError(e.toString());
       return e.toString();
     }
+  }
+
+  Future<String> readFile() async {
+    String text = "";
+    try {
+      final Directory directory = await getApplicationDocumentsDirectory();
+      final File file = File('/sys/class/net/eth0/address');
+      text = await file.readAsString();
+    } catch (e) {
+      print("Couldn't read file");
+    }
+    print("AUYEHSAHDHSA: " + text);
+    return text;
   }
 
   Future<String> getChannels() async {
@@ -277,6 +299,17 @@ class MyNetwork {
       MyPrint.printError(e.toString());
       return e.toString();
     }
+  }
+
+  static Future<String> initPlatformState() async {
+    String platformVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      platformVersion = await GetMac.macAddress;
+    } catch (e) {
+      platformVersion = '02:00:00:00:00:00';
+    }
+    return platformVersion;
   }
 
   void updateFavorites(var data) {

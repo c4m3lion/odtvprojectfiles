@@ -5,6 +5,7 @@ class MyVideoFunctions {
   static late Function openSettingVideo;
   static late Function setCategory;
   static late Function changeAspectRatio;
+  static late String macAdress;
 
   static int currentCategoryIndex = 1;
   static int currentCategoryofChannelIndex = 1;

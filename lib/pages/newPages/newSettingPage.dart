@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:odtvprojectfiles/mylibs/myDatas.dart';
 import 'package:odtvprojectfiles/mylibs/myNetwork.dart';
+import 'package:odtvprojectfiles/mylibs/myVideoFunctions.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -46,6 +47,19 @@ class _SettingPageState extends State<SettingPage> {
                 ),
                 title: const Text('Version').tr(),
                 subtitle: const Text('v0.0.1'),
+                isThreeLine: true,
+              ),
+            ),
+            Material(
+              color: Colors.transparent,
+              child: ListTile(
+                onTap: () => {},
+                leading: const Icon(
+                  Icons.wifi,
+                  size: 30,
+                ),
+                title: const Text('MAC Adress').tr(),
+                subtitle: Text(MyVideoFunctions.macAdress),
                 isThreeLine: true,
               ),
             ),
